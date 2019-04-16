@@ -1,0 +1,43 @@
+html{
+    height:100%;
+}
+body {
+    color: #02002a;
+    font-size: 20pt;
+    /*background-image: -webkit-linear-gradient(top, #dde9f7 20%,#b3ceed 20%,#b3ceed 40%,#8ab4e4 40%,#8ab4e4 60%,#5390d7 60%,#5390d7 80%,#2866ad 80%,#2866ad 100%)   ;
+    background-repeat: no-repeat;
+    background-attachment: fixed;*/
+}
+
+h1{
+    font-size: 42pt;
+    font-weight: bold;
+}
+
+#title{
+    position: absolute;
+    background: #0b1d31;
+    color:snow;
+    width: 60%;
+    top: 10%;
+    left: 10%;
+    padding: 2%;
+}
+
+.fish-container{
+    border: none;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 15px;
+}
+
+.fish{
+    position: relative;
+    left:15%;
+    top: 10%;
+    width:80%;
+}
+
+.upload-container{
+    margin-top: 1%;
+}

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>E-mail analysis</title>
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&amp;subset=latin-ext" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/analysis.css"/>
+
+    <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="/webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#senderchain').DataTable(
+                {
+                    "paging": false,
+                    "searching": false,
+                }
+            );
+
+            $('#senderchain').on('click', 'button.showDetails', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+
+                var sourceInfoMessage = 'This entry has been automatically determined to be the first public source of this e-mail. ' +
+                    'Discrepancies may (or may not) indicate a spoofed header.';
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+
+
+                    $(this).html('+');
+
+                } else {
+                    // Open this row
+
+                    if ($(tr).hasClass("source")) {
+
+                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), sourceInfoMessage), 'source').show();
+
+                    } else {
+                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), tr.data('extra-info'))).show();
+                        console.log("Not source.");
+                    }
+                    $(this).html('-');
+                }
+            });
+        });
+
+        function format(data, srcIP, extra) {
+
+            return '<div>' +
+                '<caption>Additional information:</caption>' +
+                '<ul>' +
+                '<li>Source IP: ' + srcIP + ' </li>' +
+                '</ul>' +
+                '<p>' + extra + '</p>' +
+                '<caption>Full Entry:</caption>' +
+                '<textarea readonly rows="2" style="width:100%">' + data + '</textarea>' +
+                '</div>';
+        }
+
+
+        function setSource(sourceIP) {
+
+        }
+
+    </script>
+</head>
+<body style="padding:2%">
+<h1>Analysis results</h1>
+<div class="jumbotron">
+    <h2>Details</h2>
+    <div class="jumbotron-inner">
+        <ul>
+            <li><b>Subject:</b> <span th:text="${message.subject}"></span></li>
+            <li><b>Display sender address:</b> <span th:text="${message.header.sender}"></span></li>
+            <li>
+                <b>Reply-To (from header):</b>
+                <span th:if="${message.header.replyTo != null}" th:text="${message.header.replyTo}"></span>
+                <span th:unless="${message.header.replyTo != null}">&lt;Not set&gt;</span>
+            </li>
+            <li><b>Recipient:</b> <span th:text="${message.header.recipient}"></span></li>
+            <li><b>Origin IP:</b> <span th:text="${message.header.ip}"></span></li>
+            <li><b>Link count:</b> <span th:text="${message.links.size()}">[Link count]</span></li>
+            <!--<li><b>Attachment count:</b> (Coming Soon)</li> -->
+        </ul>
+    </div>
+</div>
+<div class="jumbotron">
+    <h2>Header information</h2>
+    <div class="jumbotron-inner">
+        <h3>Sender Chain</h3>
+        <table class="table table-borderless" id="senderchain">
+            <thead>
+            <tr class="header-red">
+                <th scope="col">#</th>
+                <th scope="col">Source (From:)</th>
+                <th scope="col">Target (To:)</th>
+                <th scope="col">Via</th>
+                <th scope="col">Timestamp</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="recv : ${message.header.received}" style="border-top:1px solid grey"
+                th:class="${message.header.messageSource == recv} ? 'received source' : 'received normal'"
+                th:attr="data-full-entry=${recv.plaintext},data-src-ip=${recv.sourceIP}, data-extra-info=${recv.info}">
+                <th scope="row">
+                    <div th:text="${recvStat.count}"></div>
+                </th>
+                <td th:text="${recv.source}"></td>
+                <td th:text="${recv.target}"></td>
+                <td th:text="${recv.method}"></td>
+                <td th:text="${#dates.format(recv.dateTime, 'dd/MM/yyyy HH:mm:ss z')}"></td>
+                <td>
+                    <button class="btn btn-outline-dark showDetails">+</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <div class="alert alert-info    ">
+            The automatically determined source may not be accurate. Always perform a manual check.
+        </div>
+        <hr>
+        <br>
+        <h3>Full header:</h3>
+        <div class="header-red">
+
+        </div>
+        <textarea readonly rows="10" th:text="${message.headerPlaintext}"></textarea>
+    </div>
+</div>
+<div class="jumbotron">
+    <h2>Link information</h2>
+    <div class="jumbotron-inner">
+        <table class="table table-borderless">
+            <thead>
+            <tr class="header-red">
+                <th scope="col">#</th>
+                <th scope="col">Domain</th>
+                <th scope="col">Full link</th>
+                <th scope="col" class="results"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection Ratio</a></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="link : ${message.getLinks()}" style="border-top:1px solid grey">
+                <th scope="row">
+                    <div th:text="${linkStat.count}"></div>
+                </th>
+                <td th:text="${link.getDomain()}"></td>
+                <td th:text="${link.getTarget()}"></td>
+                <td class="results"><span th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"
+                          th:class="${link.getScanResults().getPositives() == 0} ? 'alert alert-success' : 'alert alert-danger'"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-info">
+            VirusTotal checks are not a conclusive proof of link cleanliness.
+        </div>
+    </div>
+</div>
+</body>
+</html>

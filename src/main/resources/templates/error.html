@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>500 Internal Server Error</title>
+    <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&amp;subset=latin-ext" rel="stylesheet">
+</head>
+<body>
+<div class="jumbotron" id="main">
+    <h1>500 Internal Server Error</h1>
+    <hr>
+
+    <h4>You broke it. Again. Here's what you did wrong this time:</h4>
+    <p th:text="${stackTrace}"></p>
+    <hr>
+    <a href="/">Back to main page</a>
+</div>
+</body>
+</html>
