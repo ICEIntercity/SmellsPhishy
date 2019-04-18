@@ -1,6 +1,8 @@
 package cz.intercity.smellsphishy.analysis;
 
 import cz.intercity.smellsphishy.common.exception.HeaderAnalysisException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ import java.util.regex.*;
  * @author Intercity
  */
 public class Header {
+
+    Logger log = LoggerFactory.getLogger(Header.class);
+
     private String sender;
     private String recipient;
     private String replyTo;
@@ -166,7 +171,7 @@ public class Header {
                 fieldsIntegrityFlag = true;
             }
             catch(Exception e){
-                System.out.println("WARNING: Exception while parsing date: " + e.getMessage());
+                log.debug("Exception while parsing date: " + e.getMessage());
             }
         }
 
@@ -190,7 +195,7 @@ public class Header {
             if(entry.getSourceIP() != null && this.messageSource == null){
 
 
-                System.out.println("INFO: E-mail source IP determined as " + entry.getSourceIP());
+                log.info("E-mail source IP determined as " + entry.getSourceIP());
 
                 this.setMessageSource(entry);
                 this.setMessageSourceByIP(entry.getSourceIP()); // test
@@ -205,7 +210,7 @@ public class Header {
             throw new HeaderAnalysisException("Common header data or sender chain information invalid.");
         }
 
-        System.out.println("INFO: Successfully loaded header information.");
+        log.info("Successfully loaded header information.");
     }
 
     /*Getters/Setters*/
@@ -273,7 +278,7 @@ public class Header {
         }
 
         if(!sourceIsSet){
-            System.out.println("NOTICE: Requested source IP not found. Message source remains unchanged.");
+            log.warn("Requested source IP '" + sourceIP + "'not found. Message source remains unchanged.");
         }
     }
 }

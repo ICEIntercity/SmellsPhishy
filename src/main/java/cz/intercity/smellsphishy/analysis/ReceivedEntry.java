@@ -1,6 +1,8 @@
 package cz.intercity.smellsphishy.analysis;
 
 import cz.intercity.smellsphishy.analysis.remote.IPLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +11,8 @@ import java.util.regex.Pattern;
 
 //Appropriated from Secoority
 public class ReceivedEntry {
+
+    Logger log = LoggerFactory.getLogger(ReceivedEntry.class);
 
     private String source;
     private String target;
@@ -98,7 +102,7 @@ public class ReceivedEntry {
                 this.dateTime = format.parse(dateString);
 
             } catch (Exception e) {
-                System.out.println("WARNING: Exception while parsing received entry date: " + e.getMessage());
+                log.debug("Exception while parsing received entry date: " + e.getMessage());
             }
 
             this.dateTimePlaintext = dateString;

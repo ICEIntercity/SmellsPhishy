@@ -7,6 +7,8 @@ import cz.intercity.smellsphishy.analysis.remote.IPLocation;
 import cz.intercity.smellsphishy.analysis.remote.VirusTotalResult;
 import cz.intercity.smellsphishy.common.exception.InvalidFormatException;
 import cz.intercity.smellsphishy.common.exception.RemoteAPIException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -26,14 +28,19 @@ import java.util.stream.Collectors;
 @Controller
 public class AnalysisController {
 
+    Logger log = LoggerFactory.getLogger(AnalysisController.class);
+
     @RequestMapping(value = "/analyze", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
     public String analyze(Model model, @RequestParam("file") MultipartFile file) {
 
         try {
-            System.out.println("UPLOAD: Uploading file '" + file.getName() + "'");
 
-            String fileName = file.getName();
+
+            String fileName = file.getOriginalFilename();
+
+            log.info("Uploading file '" + fileName + "'");
+
             InputStream is = file.getInputStream();
 
             Message msg = new Message(is);
@@ -51,15 +58,16 @@ public class AnalysisController {
                                 + recv.getSourceIP() +
                                 "?fields=26141", IPLocation.class);
                         if(location == null){
-                            throw new RemoteAPIException("Failed to load VirusTotal data");
+                            throw new RemoteAPIException("Failed to load location data");
                         }
 
                         if(location.getStatus().equals("success")) {
                             recv.setSourceLocation(location);
+                            log.info("Successful IP trace for " + recv.getSourceIP());
                         }
                     }
                     catch (Exception e){
-                        System.out.println("WARNING: Exception while retrieving IP Location data for '"
+                        log.warn("Exception while retrieving IP Location data for '"
                                 + recv.getSourceIP() + "': "
                                 + e.getMessage());
                     }
@@ -79,7 +87,7 @@ public class AnalysisController {
                                     "&resource=" + l.getTarget(),
                             VirusTotalResult.class);
 
-                    System.out.println("INFO: Successful VirusTotal scan for URL=" + l.getTarget());
+                    log.info("Successful VirusTotal scan for URL " + l.getTarget());
                     l.setScanResults(result);
 
                     if (result == null) {
@@ -87,11 +95,12 @@ public class AnalysisController {
                     }
 
                 } catch (Exception e) {
-                    System.out.println("WARNING: Exception while retrieving VirusTotal data: " + e.getMessage());
+                    log.warn("Exception while retrieving VirusTotal data: " + e.getMessage());
                 }
             }
 
         } catch (Exception e) {
+            log.error("Exception while performing e-mail analysis: " + e.getMessage());
             e.printStackTrace();
             model.addAttribute("stackTrace", e.getMessage());
             return "error";
