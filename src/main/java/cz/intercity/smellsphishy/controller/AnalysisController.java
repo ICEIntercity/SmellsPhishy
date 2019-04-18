@@ -2,6 +2,8 @@ package cz.intercity.smellsphishy.controller;
 
 import cz.intercity.smellsphishy.analysis.Link;
 import cz.intercity.smellsphishy.analysis.Message;
+import cz.intercity.smellsphishy.analysis.ReceivedEntry;
+import cz.intercity.smellsphishy.analysis.remote.IPLocation;
 import cz.intercity.smellsphishy.analysis.remote.VirusTotalResult;
 import cz.intercity.smellsphishy.common.exception.InvalidFormatException;
 import cz.intercity.smellsphishy.common.exception.RemoteAPIException;
@@ -24,16 +26,11 @@ import java.util.stream.Collectors;
 @Controller
 public class AnalysisController {
 
-    private String virusTotalURLEndpoint = "https://www.virustotal.com/vtapi/v2/url/report";
-    private String virusTotalAttachmentEndpoint = "https://www.virustotal.com/vtapi/v2/file/report";
-
-    private String virusTotalAPIKey = "d858fc83145896a11b8cc1d6b7e311e9d98f2579abddfd9b845d81012d6894ad";
-
     @RequestMapping(value = "/analyze", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
-    public String analyze(Model model, @RequestParam("file") MultipartFile file){
+    public String analyze(Model model, @RequestParam("file") MultipartFile file) {
 
-        try{
+        try {
             System.out.println("UPLOAD: Uploading file '" + file.getName() + "'");
 
             String fileName = file.getName();
@@ -42,33 +39,59 @@ public class AnalysisController {
             Message msg = new Message(is);
             model.addAttribute("message", msg);
 
-            //Run link analysis
-            RestTemplate restTemplate = new RestTemplate();
-            List<VirusTotalResult> resultList = new ArrayList<>();
+            //Run link analysis & get IP location data
+            RestTemplate VTRestTemplate = new RestTemplate();
+            RestTemplate IPLocRestTemplate = new RestTemplate();
 
-            for(Link l : msg.getLinks()){
-                try {
-                    VirusTotalResult result = restTemplate.getForObject(virusTotalURLEndpoint +
-                            "?apikey=" + virusTotalAPIKey +
-                            "&resource="+l.getTarget(),
-                            VirusTotalResult.class);
+            for (ReceivedEntry recv : msg.getHeader().getReceived()) {
+                if (recv.getSourceIP() != null) {
 
-                    if(result == null){
-                        throw new RemoteAPIException("Failed to load VirusTotal data");
+                    try {
+                        IPLocation location = IPLocRestTemplate.getForObject("http://ip-api.com/json/"
+                                + recv.getSourceIP() +
+                                "?fields=26141", IPLocation.class);
+                        if(location == null){
+                            throw new RemoteAPIException("Failed to load VirusTotal data");
+                        }
+
+                        if(location.getStatus().equals("success")) {
+                            recv.setSourceLocation(location);
+                        }
+                    }
+                    catch (Exception e){
+                        System.out.println("WARNING: Exception while retrieving IP Location data for '"
+                                + recv.getSourceIP() + "': "
+                                + e.getMessage());
                     }
 
-                    System.out.println("INFO: Successful VirusTotal scan for URL=" +l.getTarget());
-                    l.setScanResults(result);
 
-                }
-                catch(Exception e){
-                    System.out.println("WARNING: Exception while retrieving VirusTotal data: " + e.getMessage());
-                    l.setScanResults(null);
                 }
             }
 
-        }
-        catch(Exception e){
+            String virusTotalAttachmentEndpoint = "https://www.virustotal.com/vtapi/v2/file/report";
+            String virusTotalURLEndpoint = "https://www.virustotal.com/vtapi/v2/url/report";
+            String virusTotalAPIKey = "d858fc83145896a11b8cc1d6b7e311e9d98f2579abddfd9b845d81012d6894ad";
+
+            for (Link l : msg.getLinks()) {
+                try {
+                    VirusTotalResult result = VTRestTemplate.getForObject(virusTotalURLEndpoint +
+                                    "?apikey=" + virusTotalAPIKey +
+                                    "&resource=" + l.getTarget(),
+                            VirusTotalResult.class);
+
+                    System.out.println("INFO: Successful VirusTotal scan for URL=" + l.getTarget());
+                    l.setScanResults(result);
+
+                    if (result == null) {
+                        throw new RemoteAPIException("Failed to load VirusTotal data");
+                    }
+
+                } catch (Exception e) {
+                    System.out.println("WARNING: Exception while retrieving VirusTotal data: " + e.getMessage());
+                }
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("stackTrace", e.getMessage());
             return "error";

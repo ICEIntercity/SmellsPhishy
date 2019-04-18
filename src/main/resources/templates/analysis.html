@@ -44,23 +44,25 @@
 
                     if ($(tr).hasClass("source")) {
 
-                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), sourceInfoMessage), 'source').show();
+                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), tr.data('location'), tr.data('isp'), tr.data('org'), sourceInfoMessage), 'source').show();
 
                     } else {
-                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), tr.data('extra-info'))).show();
-                        console.log("Not source.");
+                        row.child(format(tr.data('full-entry'), tr.data('src-ip'), tr.data('location'), tr.data('isp'), tr.data('org'), tr.data('extra-info'))).show();
                     }
                     $(this).html('-');
                 }
             });
         });
 
-        function format(data, srcIP, extra) {
+            function format(data, srcIP, location, isp, org, extra) {
 
             return '<div>' +
                 '<caption>Additional information:</caption>' +
                 '<ul>' +
-                '<li>Source IP: ' + srcIP + ' </li>' +
+                    '<li>Source IP: ' + srcIP + ' </li>' +
+                    '<li>Location: ' + location + '</li>' +
+                    '<li>ISP: ' + isp + '</li>' +
+                    '<li>Organization: ' + org + '</li>' +
                 '</ul>' +
                 '<p>' + extra + '</p>' +
                 '<caption>Full Entry:</caption>' +
@@ -113,7 +115,15 @@
             <tbody>
             <tr th:each="recv : ${message.header.received}" style="border-top:1px solid grey"
                 th:class="${message.header.messageSource == recv} ? 'received source' : 'received normal'"
-                th:attr="data-full-entry=${recv.plaintext},data-src-ip=${recv.sourceIP}, data-extra-info=${recv.info}">
+                th:attr="
+                    data-full-entry=${recv.plaintext},
+                    data-src-ip=${recv.sourceIP},
+                    data-location= ${ recv.sourceLocation != null ? recv.sourceLocation.city +
+                        ', ' + recv.sourceLocation.regionName +
+                        ', ' + recv.sourceLocation.country : 'Not Available'},
+                    data-isp=${recv.sourceLocation != null ? recv.sourceLocation.isp : 'Not Available'},
+                    data-org=${recv.sourceLocation != null ? recv.sourceLocation.org : 'Not Available'},
+                    data-extra-info=${recv.info}">
                 <th scope="row">
                     <div th:text="${recvStat.count}"></div>
                 </th>
@@ -149,7 +159,8 @@
                 <th scope="col">#</th>
                 <th scope="col">Domain</th>
                 <th scope="col">Full link</th>
-                <th scope="col" class="results"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection Ratio</a></th>
+                <th scope="col" class="results"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection
+                    Ratio</a></th>
             </tr>
             </thead>
             <tbody>
@@ -159,8 +170,18 @@
                 </th>
                 <td th:text="${link.getDomain()}"></td>
                 <td th:text="${link.getTarget()}"></td>
-                <td class="results"><span th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"
-                          th:class="${link.getScanResults().getPositives() == 0} ? 'alert alert-success' : 'alert alert-danger'"></span>
+                <td class="results">
+                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() != 0}"
+                          th:class="${link.getScanResults().getPositives() == 0} ? 'alert alert-success' : 'alert alert-danger'">
+                        <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
+                           th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
+                    </span>
+                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0}" class="alert alert-primary">
+                        <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
+                    </span>
+                    <span th:if="${link.getScanResults() == null}">
+                        Scan failed
+                    </span>
                 </td>
             </tr>
             </tbody>

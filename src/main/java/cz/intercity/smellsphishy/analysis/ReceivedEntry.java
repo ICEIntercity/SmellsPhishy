@@ -1,5 +1,7 @@
 package cz.intercity.smellsphishy.analysis;
 
+import cz.intercity.smellsphishy.analysis.remote.IPLocation;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -13,6 +15,8 @@ public class ReceivedEntry {
     private String method;
     private Date dateTime;
     private String sourceIP;
+
+    private IPLocation sourceLocation;
 
     private String dateTimePlaintext;
 
@@ -135,6 +139,14 @@ public class ReceivedEntry {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public IPLocation getSourceLocation() {
+        return sourceLocation;
+    }
+
+    public void setSourceLocation(IPLocation sourceLocation) {
+        this.sourceLocation = sourceLocation;
     }
 
 }
