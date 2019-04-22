@@ -26,7 +26,7 @@ public class ReceivedEntry {
 
     private int score; // Not implemented
 
-    private String info;
+    private String info = "";
 
     private String plaintext;
 
@@ -48,7 +48,7 @@ public class ReceivedEntry {
         }
     }
 
-    //default constructor
+    //default constructor, not sure if necessary
     public ReceivedEntry(){}
 
     public ReceivedEntry(String entryPlaintext) {

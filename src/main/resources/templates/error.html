@@ -17,8 +17,11 @@
     <h1>500 Internal Server Error</h1>
     <hr>
 
-    <h4>You broke it. Again. Here's what you did wrong this time:</h4>
-    <p th:text="${stackTrace}"></p>
+    <h4>You broke it. Again.</h4>
+    <div th:if="${stackTrace != null}">
+        Here's what you did wrong this time:
+        <p th:text="${stackTrace}"></p>
+    </div>
     <hr>
     <a href="/">Back to main page</a>
 </div>

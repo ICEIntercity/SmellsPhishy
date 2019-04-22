@@ -2,10 +2,14 @@ package cz.intercity.smellsphishy.analysis;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hsmf.*;
+import org.apache.poi.hsmf.datatypes.AttachmentChunks;
 import org.apache.poi.hsmf.exceptions.ChunkNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -13,13 +17,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * <strong>class Message</strong>
+ * <small>cz.intercity.smellsphishy.analysis</small>
+ * <p>
+ * A representation of an e-mail message in a more structured, operation-friendly form.
+ *
+ * @author Intercity (Jakub Tetera)
+ * @version 1.0.0
+ */
 public class Message {
 
     private Header header;
     private String headerPlaintext;
 
     private String from;
-
 
     private String to;
     private String cc;
@@ -29,10 +41,22 @@ public class Message {
     private Calendar msgDate;
 
     private List<Link> links;
+    private List<AttachmentHash> attachmentHashes;
 
+    /**
+     * Message Constructor
+     *
+     * @param in an InputStream representation of the input file. The file should be in the .msg format. An IOException
+     *           will be thrown if the message is not a valid .msg or if another error occurs during loading basic
+     *           information.
+     * @throws IOException
+     */
     public Message(InputStream in) throws IOException {
 
+        Logger log = LoggerFactory.getLogger(Message.class);
+
         this.links = new ArrayList<>();
+        this.attachmentHashes = new ArrayList<>();
 
         //Load message from InputStream
         MAPIMessage mapiMessage;
@@ -40,10 +64,12 @@ public class Message {
             mapiMessage = new MAPIMessage(in);
 
         } catch (IOException e) {
-            //Fatal
+            //Fatal, wrong format
             throw (e);
         }
 
+
+        //Loading information
         try {
             this.from = mapiMessage.getDisplayFrom();
         } catch (ChunkNotFoundException cnfe) {
@@ -71,12 +97,26 @@ public class Message {
             this.subject = "";
         }
 
+
+        //Load HTML or RTF body
+        String body = null;
         try {
-            this.textBody = mapiMessage.getRtfBody();
+
+
+            //Attempt to load the HTML contents
+            try {
+                body = mapiMessage.getHtmlBody();
+            } catch (ChunkNotFoundException htmlNotFound) {
+                log.trace("No valid HTML content found, attempting to load RTF body...");
+                body = mapiMessage.getRtfBody();
+            }
+
         } catch (ChunkNotFoundException cnfe) {
             //This is getting old
             this.textBody = "";
-            System.err.println(cnfe.getMessage());
+            log.error("Exception while loading link information: No valid HTML content found within e-mail: " + cnfe.getMessage());
+        } finally {
+            this.textBody = body;
         }
 
         try {
@@ -87,21 +127,23 @@ public class Message {
         }
 
         /*
+         *  Loading Headers
+         *
          *  The way Apache POI (HSMF) handles headers is wonky, as it takes them by row. It is best to reassemble the
          *  header before performing analysis.
          */
         try {
-            String [] headers = mapiMessage.getHeaders();
+            String[] headers = mapiMessage.getHeaders();
 
             StringBuilder sb = new StringBuilder();
-            for(String row : headers){
+            for (String row : headers) {
                 sb.append(row).append("\n");
             }
 
             this.headerPlaintext = sb.toString();
 
             //Attempt header analysis immediately, discard empty headers
-            if(!StringUtils.isBlank(headerPlaintext)) {
+            if (!StringUtils.isBlank(headerPlaintext)) {
                 this.header = new Header(headerPlaintext);
             }
         } catch (Exception e) {
@@ -113,10 +155,32 @@ public class Message {
         //Get links from e-mail body (Please work on .rtf...)
         Pattern linkPattern = Pattern.compile("(?<=(<a))(.)*?(href=['\"])([^'\"]+)(['\"])", Pattern.CASE_INSENSITIVE);
         Matcher linkMatcher = linkPattern.matcher(textBody);
-        while(linkMatcher.find()){
+        while (linkMatcher.find()) {
             Link newLink = new Link(linkMatcher.group(4));
             this.links.add(newLink);
         }
+
+        //Load attachments & get their hashes. Attachments themselves are not stored anywhere.
+        for (AttachmentChunks attachment : mapiMessage.getAttachmentFiles()) {
+
+            String attachmentName = attachment.getAttachFileName().getValue();
+            byte[] attachmentBytes = attachment.getEmbeddedAttachmentObject();
+
+            /*
+               getEmbeddedAttachmentObject() returns null if the attachment is a valid .msg file.
+               In those cases, the attachment will be skipped and an INFO message will be logged.
+               See https://poi.apache.org/apidocs/dev/org/apache/poi/hsmf/datatypes/AttachmentChunks.html for details
+            */
+            if (attachmentBytes != null) {
+                try {
+                    AttachmentHash hash = new AttachmentHash(attachmentName, attachmentBytes);
+                    attachmentHashes.add(hash);
+                } catch (NoSuchAlgorithmException e) {
+                    log.warn("Exception while generating hash for attachment " + attachmentName + ": " + e.getMessage());
+                }
+            }
+        }
+
         //this.debug();
     }
 
@@ -160,9 +224,14 @@ public class Message {
         return links;
     }
 
+    public List<AttachmentHash> getAttachmentHashes() {
+        return attachmentHashes;
+    }
+
     //Debug printout - DO NOT ACTUALLY USE
     private void debug() {
 
+        System.out.println(" - - - BEGIN MESSAGE DEBUG INFORMATION - - - ");
         System.out.println("To:" + this.to);
         System.out.println("From:" + this.from);
         System.out.println("Body:");
@@ -171,9 +240,9 @@ public class Message {
         System.out.println("--------------------------");
         System.out.println("Headers:");
         System.out.println(headerPlaintext);
+        System.out.println(" - - - END MESSAGE DEBUG INFORMATION - - - ");
 
     }
-
 
 
 }

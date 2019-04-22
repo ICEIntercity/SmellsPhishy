@@ -54,15 +54,15 @@
             });
         });
 
-            function format(data, srcIP, location, isp, org, extra) {
+        function format(data, srcIP, location, isp, org, extra) {
 
             return '<div>' +
                 '<caption>Additional information:</caption>' +
                 '<ul>' +
-                    '<li>Source IP: ' + srcIP + ' </li>' +
-                    '<li>Location: ' + location + '</li>' +
-                    '<li>ISP: ' + isp + '</li>' +
-                    '<li>Organization: ' + org + '</li>' +
+                '<li>Source IP: ' + srcIP + ' </li>' +
+                '<li>Location: ' + location + '</li>' +
+                '<li>ISP: ' + isp + '</li>' +
+                '<li>Organization: ' + org + '</li>' +
                 '</ul>' +
                 '<p>' + extra + '</p>' +
                 '<caption>Full Entry:</caption>' +
@@ -79,6 +79,7 @@
 </head>
 <body style="padding:2%">
 <h1>Analysis results</h1>
+<a href="/"><- Back</a>
 <div class="jumbotron">
     <h2>Details</h2>
     <div class="jumbotron-inner">
@@ -93,7 +94,7 @@
             <li><b>Recipient:</b> <span th:text="${message.header.recipient}"></span></li>
             <li><b>Origin IP:</b> <span th:text="${message.header.ip}"></span></li>
             <li><b>Link count:</b> <span th:text="${message.links.size()}">[Link count]</span></li>
-            <!--<li><b>Attachment count:</b> (Coming Soon)</li> -->
+            <!--<li><b>AttachmentHash count:</b> (Coming Soon)</li> -->
         </ul>
     </div>
 </div>
@@ -176,7 +177,8 @@
                         <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
                            th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
                     </span>
-                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0}" class="alert alert-primary">
+                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0}"
+                          class="alert alert-primary">
                         <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
                     </span>
                     <span th:if="${link.getScanResults() == null}">
@@ -188,6 +190,34 @@
         </table>
         <div class="alert alert-info">
             VirusTotal checks are not a conclusive proof of link cleanliness.
+        </div>
+    </div>
+</div>
+<div class="jumbotron">
+    <h2>Attachment information</h2>
+    <div class="jumbotron-inner">
+        <table class="table table-borderless">
+            <thead>
+            <tr class="header-red">
+                <th scope="col">#</th>
+                <th scope="col">File Name</th>
+                <th scope="col">Hash</th>
+                <th scope="col" class="results">VirusTotal link</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hash : ${message.getAttachmentHashes()}" style="border-top:1px solid grey">
+                <td th:text="${hashStat.count}"></td>
+                <td th:text="${hash.getFileName()}"></td>
+                <td><textarea readonly rows="1" th:text="${hash.toString()}"></textarea></td>
+                <td class="results"><a target="_blank"
+                                       th:href="${'https://www.virustotal.com/#/search/' + hash.toString()}">&#x1f517;</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-info">
+            VirusTotal checks are not a conclusive proof of attachment cleanliness.
         </div>
     </div>
 </div>
