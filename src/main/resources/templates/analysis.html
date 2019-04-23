@@ -173,7 +173,7 @@
                         <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
                            th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
                     </span>
-                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0}"
+                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0 && link.getScanResults().getPermalink() != null}"
                           class="alert alert-primary">
                         <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
                     </span>

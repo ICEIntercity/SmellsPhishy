@@ -79,7 +79,7 @@ public class AnalysisController {
 
             String virusTotalAttachmentEndpoint = "https://www.virustotal.com/vtapi/v2/file/report";
             String virusTotalURLEndpoint = "https://www.virustotal.com/vtapi/v2/url/report";
-            String virusTotalAPIKey = "d858fc83145896a11b8cc1d6b7e311e9d98f2579abddfd9b845d81012d6894ad";
+                String virusTotalAPIKey = "d858fc83145896a11b8cc1d6b7e311e9d98f2579abddfd9b845d81012d6894ad";
 
             for (Link l : msg.getLinks()) {
                 try {
