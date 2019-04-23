@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@SessionAttributes("message")
 public class AnalysisController {
 
     Logger log = LoggerFactory.getLogger(AnalysisController.class);
@@ -108,5 +109,11 @@ public class AnalysisController {
 
 
         return "analysis";
+    }
+
+    @GetMapping("/generateTicket")
+    public String generateTicket(@ModelAttribute("message") Message message, Model model){
+        message.debug();
+        return "ticketForm";
     }
 }

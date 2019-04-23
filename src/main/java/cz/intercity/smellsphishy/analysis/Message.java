@@ -229,7 +229,7 @@ public class Message {
     }
 
     //Debug printout - DO NOT ACTUALLY USE
-    private void debug() {
+    public void debug() {
 
         System.out.println(" - - - BEGIN MESSAGE DEBUG INFORMATION - - - ");
         System.out.println("To:" + this.to);
