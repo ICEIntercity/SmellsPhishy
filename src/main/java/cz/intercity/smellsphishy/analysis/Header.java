@@ -105,7 +105,7 @@ public class Header {
         The flag will be checked at the end of this method, and an exception will be thrown if none of the fields were
         successfully parsed. Furthermore, the exception will also be thrown if the sender chain could not be found.
         */
-        Boolean senderChainIntegrityFlag = false;
+        Boolean senderChainIntegrityFlag = true;
         Boolean fieldsIntegrityFlag = false;
 
         /*
@@ -181,9 +181,6 @@ public class Header {
 
         while(receivedMatcher.find()){
             ReceivedEntry newEntry = new ReceivedEntry(receivedMatcher.group());
-
-
-
             received.add(0, newEntry);
         }
 
@@ -194,17 +191,15 @@ public class Header {
         for(ReceivedEntry entry : received){
             if(entry.getSourceIP() != null && this.messageSource == null){
 
-
                 log.info("E-mail source IP determined as " + entry.getSourceIP());
-
                 this.setMessageSource(entry);
-                this.setMessageSourceByIP(entry.getSourceIP()); // test
+
                 break;
             }
         }
 
-        if(!received.isEmpty())
-            senderChainIntegrityFlag = true;
+        if(received.isEmpty())
+            senderChainIntegrityFlag = false;
 
         if(!fieldsIntegrityFlag || !senderChainIntegrityFlag){
             throw new HeaderAnalysisException("Common header data or sender chain information invalid.");
@@ -262,11 +257,11 @@ public class Header {
         return messageSource;
     }
 
-    public void setMessageSource(ReceivedEntry messageSource) {
+    private void setMessageSource(ReceivedEntry messageSource) {
         this.messageSource = messageSource;
     }
 
-    public void setMessageSourceByIP(String sourceIP){
+    private void setMessageSourceByIP(String sourceIP){
 
         boolean sourceIsSet = false;
         for(ReceivedEntry e : received){

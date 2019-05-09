@@ -2,26 +2,24 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>500 Internal Server Error</title>
+    <title>Error!</title>
     <script src="webjars/jquery/3.3.1/jquery.min.js"></script>
     <script src="webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"></script>
-
     <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="webjars/datatables/1.10.19/css/dataTables.bootstrap4.min.css"/>
-
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&amp;subset=latin-ext" rel="stylesheet">
 </head>
 <body>
 <div class="jumbotron" id="main">
-    <h1>500 Internal Server Error</h1>
+    <h1>You broke it. Again.</h1>
     <hr>
-
-    <h4>You broke it. Again.</h4>
-    <div th:if="${stackTrace != null}">
-        Here's what you did wrong this time:
-        <p th:text="${stackTrace}"></p>
-    </div>
+    <p>Something very, very wrong happened. There is no chance whatsoever that my programming is to blame, so it has to
+        be your fault. You monster.</p>
+    <p>
+        If you wish to apologize, send an e-mail with the explanation of your heinous acts to <a href="mailto:jakub.tetera@sap.com">Jakub Tetera, Lord of Java and
+        protector of the SAP</a>.
+    </p>
     <hr>
     <a href="/">Back to main page</a>
 </div>

@@ -1,0 +1,22 @@
+.jumbotron-inner{
+    padding: 1%;
+}
+
+label{
+    font-weight: bold;
+}
+
+textarea{
+    width: 98%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.header-red{
+    width: 100%;
+}
+
+.header-red h2{
+    font-size: 15pt;
+}

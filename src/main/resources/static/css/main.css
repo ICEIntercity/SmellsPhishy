@@ -1,7 +1,104 @@
-html{
+html {
     height: 100%;
 }
-body{
+
+body {
     font-family: 'Amatic SC', cursive;
     font-size: 18pt;
+}
+
+h1 {
+    font-size: 30pt;
+}
+
+h2 {
+    font-size: 24pt;
+}
+
+h3 {
+    font-size: 20pt;
+}
+
+.thead-blue {
+    background: rgba(11, 29, 49, 0.8) !important;
+    background: none;
+    color: white;
+}
+
+.jumbotron {
+    background: #0b1d31;
+    padding: 1%;
+    color: snow;
+    border-radius: 5px;
+}
+
+.jumbotron-inner {
+    background: ghostwhite;
+    font-family: Roboto, sans-serif;
+    color: black;
+    border-radius: 2px;
+    font-size: 10pt;
+    padding: 1%;
+}
+
+.header-red {
+    background: #c83737;
+    border-radius: 3px;
+    border: none !important;
+    padding: 1%;
+    color: white;
+    margin: 1% 0 1% 0;
+}
+
+thead .header-red th {
+    background-color: #c83737 !important;
+    border: none !important;
+}
+
+.source {
+    background: #ffffcc;
+}
+
+
+th a {
+    color: white;
+}
+
+th a:hover {
+    color: white;
+}
+
+th a:visited {
+    color: white;
+}
+
+.btn-blue {
+    border: 2px solid #0b1d31;
+    background: none;
+    color: #0b1d31;
+}
+
+.btn-blue:hover {
+    background: #0b1d31;
+    color: white;
+}
+
+.submit{
+    font-size: 20pt;
+    width: 15%;
+    text-align: center;
+}
+
+.jumbotron-section {
+    border: 2px solid #c83737;
+    border-radius: 3px;
+    display: block;
+    margin-bottom: 3%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2%
+}
+
+div.ui-datepicker {
+    font-size: 62.5%;
 }

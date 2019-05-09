@@ -6,7 +6,7 @@
 
     <groupId>cz.intercity.security</groupId>
     <artifactId>phishy</artifactId>
-    <version>1.0.0-HOTFIX</version>
+    <version>1.1.0-DEV</version>
 
     <packaging>${packaging.type}</packaging>
 
@@ -90,6 +90,13 @@
             <artifactId>datatables</artifactId>
             <version>1.10.19</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.webjars/jquery-ui -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery-ui</artifactId>
+            <version>1.12.1</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
         <dependency>
@@ -107,6 +114,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

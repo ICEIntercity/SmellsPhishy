@@ -2,7 +2,6 @@ package cz.intercity.smellsphishy.analysis.remote;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class VirusTotalResult {
     private String permalink;
     private int positives;
