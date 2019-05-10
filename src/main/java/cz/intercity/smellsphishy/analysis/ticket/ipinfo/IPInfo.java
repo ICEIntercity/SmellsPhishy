@@ -7,15 +7,20 @@ public class IPInfo {
     private String ip;
     private String locationInfo;
     private String isp;
-
+    private int id;
 
     private IPInfo(){}
 
-    protected IPInfo(ReceivedEntry source){
+    protected IPInfo(ReceivedEntry source, int id){
         this.ip = source.getSourceIP();
         IPLocation location = source.getSourceLocation();
         this.locationInfo = location.getCity() + ", " + location.getRegionName() + ", " + location.getCountry();
         this.isp = location.getIsp();
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getIp() {

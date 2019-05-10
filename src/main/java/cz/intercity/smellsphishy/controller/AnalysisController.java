@@ -6,28 +6,38 @@ import cz.intercity.smellsphishy.analysis.ReceivedEntry;
 import cz.intercity.smellsphishy.analysis.ticket.Ticket;
 import cz.intercity.smellsphishy.analysis.remote.IPLocation;
 import cz.intercity.smellsphishy.analysis.remote.VirusTotalResult;
+import cz.intercity.smellsphishy.analysis.ticket.TicketForm;
 import cz.intercity.smellsphishy.common.exception.RemoteAPIException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.zip.DataFormatException;
 
 @Controller
-@SessionAttributes("ticket")
+@SessionAttributes({"ticketForm", "ticket"})
 public class AnalysisController {
 
     Logger log = LoggerFactory.getLogger(AnalysisController.class);
@@ -103,8 +113,10 @@ public class AnalysisController {
             }
 
             Ticket ticket = new Ticket(msg);
+            TicketForm ticketForm = new TicketForm(ticket);
             //log.debug("Ticket info:\n" + ticket.toString());
             model.addAttribute(ticket);
+            model.addAttribute(ticketForm);
 
 
         } catch (Exception e) {
@@ -117,20 +129,44 @@ public class AnalysisController {
         return "analysis";
     }
 
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
+
     @RequestMapping(value="/ticketForm", method = RequestMethod.GET)
-    public String ticketForm(@SessionAttribute Ticket ticket, Model model){
-        model.addAttribute(ticket);
+    public String ticketForm(@SessionAttribute TicketForm ticketForm, Model model){
+        model.addAttribute(ticketForm);
         return "ticketForm";
     }
 
-    @PostMapping("/generateTicket")
-    public String generateTicket(@ModelAttribute @Valid Ticket ticket, BindingResult result, ModelMap model){
-        if(result.hasErrors()){
-            for(ObjectError error : result.getAllErrors()){
-                System.out.println("ERROR: " + error.toString());
+    @RequestMapping(value="/generateTicket", method=RequestMethod.POST)
+    public String generateTicket(HttpServletRequest request, @SessionAttribute Ticket ticket,
+                                 @ModelAttribute @Valid TicketForm form, BindingResult result, ModelMap model, SessionStatus status){
+
+
+
+        //TODO: Create proper error handling
+        if(result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                log.warn("Message binding/validation error: " + error.toString());
             }
+            model.addAttribute("errorList", result.getAllErrors());
+            return "ticketForm";
         }
-        System.out.println(ticket.toString());
-        return "index";
+
+        try {
+            ticket.updateFromForm(form);
+        }
+        catch(Exception e){
+            log.warn(e.getMessage());
+        }
+
+        status.setComplete();
+
+        log.info("Generated ticket: " + ticket.toString());
+        model.addAttribute(ticket);
+        return "ticket";
     }
 }

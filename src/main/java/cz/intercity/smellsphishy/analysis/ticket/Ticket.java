@@ -35,16 +35,16 @@ public class Ticket {
         IPInfoFactory ipInfoFactory = new IPInfoFactory();
         this.IPTrace = new ArrayList<>();
 
-
-
+        int index = 0;
         for(ReceivedEntry e : message.getHeader().getReceived()){
-            IPInfo entryIPInfo = ipInfoFactory.getIPInfo(e);
+            IPInfo entryIPInfo = ipInfoFactory.getIPInfo(e, index);
             if(entryIPInfo != null){
                 IPTrace.add(entryIPInfo);
+                index++;
             }
         }
 
-        this.srcIP = message.getHeader().getMessageSource().getSourceIP();
+        this.srcIP = IPTrace.get(0);
     }
 
     /**
@@ -61,24 +61,19 @@ public class Ticket {
 
     private String subject;
 
-    @NotNull
     private String summary;
 
     private Calendar receivedAt;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date reportedAt;
 
     private boolean linkClicked;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date linkClickedAt;
 
     private boolean attachmentOpened;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date attachmentOpenedAt;
 
     private boolean credentialsEntered;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date credentialsEnteredAt;
 
     private String recipients;
@@ -88,7 +83,7 @@ public class Ticket {
     private List<AttachmentInfo> attachments;
 
     private List<IPInfo> IPTrace;
-    private String srcIP;
+    private IPInfo srcIP;
     private boolean ipSAPConfigured;
     private String arinLocation;
     private boolean ipSpoofed;
@@ -222,7 +217,7 @@ public class Ticket {
         return IPTrace;
     }
 
-    public String getSrcIP() {
+    public IPInfo getSrcIP() {
         return srcIP;
     }
 
@@ -234,7 +229,7 @@ public class Ticket {
         this.ipSAPConfigured = ipSAPConfigured;
     }
 
-    public void setSrcIP(String srcIP) {
+    public void setSrcIP(IPInfo srcIP) {
         this.srcIP = srcIP;
     }
 
@@ -288,7 +283,7 @@ public class Ticket {
         sb.append("Ticket{\n" + "\t Subject: ").append(subject).append("\n")
                 .append("\t Summary: ").append(summary).append("\n")
                 .append("\t ReceivedAt: ").append(sdf.format(receivedAt.getTime())).append("\n")
-                .append("\t ReportedAt: ").append(reportedAt).append("\n")
+                .append("\t ReportedAt: ").append(sdf.format(reportedAt.getTime())).append("\n")
                 .append("\t Recipients: ").append(recipients).append("\n");
 
         sb.append("\tLinks: \n");
@@ -315,11 +310,95 @@ public class Ticket {
         return sdf.format(receivedAt.getTime());
     }
 
-    public String displayDate(Date dt){
+    public String displayDateTime(Date dt){
         TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss zzz", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm zzz", Locale.US);
         sdf.setTimeZone(timeZone);
 
-        return sdf.format(dt);
+        return sdf.format(dt.getTime());
+    }
+
+    public String displayDate(Date dt){
+
+
+        if(dt != null) {
+            TimeZone timeZone = TimeZone.getDefault();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            sdf.setTimeZone(timeZone);
+
+            return sdf.format(dt);
+        }
+        return "";
+    }
+
+    public String displayTime(Date dt){
+
+        if(dt != null) {
+            TimeZone timeZone = TimeZone.getDefault();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.US);
+            sdf.setTimeZone(timeZone);
+
+            return sdf.format(dt);
+        }
+        return "";
+    }
+
+    public void updateFromForm(TicketForm form) throws Exception {
+
+        this.summary = form.getSummary();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm", Locale.US);
+        sdf.setTimeZone(TimeZone.getDefault());
+
+        try{
+            this.reportedAt = sdf.parse(form.getReportedAtDate() + " " + form.getReportedAtTime());
+        }
+        catch(Exception e){
+            throw new Exception("Exception while parsing ticket date(s): Unable to parse " + form.getReportedAtDate() + " " + form.getReportedAtTime());
+        }
+
+
+        this.attachmentOpened = form.isAttachmentOpened();
+        if(attachmentOpened) {
+            try {
+                this.attachmentOpenedAt = sdf.parse(form.getAttachmentOpenedAtDate() + " " + form.getAttachmentOpenedAtTime());
+            } catch (Exception e) {
+                throw new Exception("Exception while parsing ticket date(s): Unable to parse " + form.getAttachmentOpenedAtDate() + " " + form.getAttachmentOpenedAtTime());
+            }
+        }
+
+        this.credentialsEntered = form.isCredentialsEntered();
+
+        if(credentialsEntered) {
+            try {
+                this.credentialsEnteredAt = sdf.parse(form.getCredentialsEnteredAtDate() + " " + form.getCredentialsEnteredAtTime());
+            } catch (Exception e) {
+                throw new Exception("Exception while parsing ticket date(s): Unable to parse " + form.getCredentialsEnteredAtDate() + " " + form.getCredentialsEnteredAtTime());
+            }
+        }
+
+        this.linkClicked = form.isLinkClicked();
+        if(linkClicked) {
+            try {
+                this.linkClickedAt = sdf.parse(form.getLinkClickedAtDate() + " " + form.getLinkClickedAtTime());
+            } catch (Exception e) {
+                throw new Exception("Exception while parsing ticket date(s): Unable to parse " + form.getLinkClickedAtDate() + " " + form.getLinkClickedAtTime());
+            }
+        }
+
+        links = form.getLinks();
+
+        attachments = form.getAttachments();
+
+        srcIP = IPTrace.get(form.getSrcID());
+
+        this.ipSAPConfigured = form.isSAPDefined();
+        this.arinLocation = form.getArin();
+        this.ipSpoofed = form.isSpoofed();
+
+        this.pwdResetRequested = form.isPwdResetRequested();
+        this.senderBlockRequested = form.isSenderBlockRequested();
+        this.ironportRequested = form.isSenderBlockRequested();
+        this.sapSpamRequested = form.isSenderBlockRequested();
     }
 }

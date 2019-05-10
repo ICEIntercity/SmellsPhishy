@@ -12,7 +12,7 @@
     };
 </script>
 <h1>Generate ticket</h1>
-<form action="/generateTicket" id="generateTicket" method="post" th:object="${ticket}">
+<form action="/generateTicket" id="generateTicket" method="post" th:object="${ticketForm}">
     <div class="jumbotron" id="ticketForm">
         <h2>Ticket content</h2>
         <div class="jumbotron-inner">
@@ -23,7 +23,7 @@
                     <label for="subject" class="col-2 col-form-label">Subject:</label>
                     <div class="col-auto">
                         <input disabled type="text" size="30" class="form-control-plaintext" name="subject" id="subject"
-                               th:value="${ticket.getSubject()}">
+                               th:field="*{subject}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -31,7 +31,7 @@
                     <div class="col-auto">
                         <input disabled type="text" size="30" class="form-control-plaintext" name="recipients"
                                id="recipients"
-                               th:value="${ticket.getRecipients()}">
+                               th:value="*{recipients}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -43,19 +43,19 @@
                 <div class="form-group row">
                     <label for="receivedAt" class="col-2 col-form-label">Date/Time original mail received:</label>
                     <div class="col-auto">
-                        <input readonly type="text" class="form-control-plaintext" name="receivedAt" id="receivedAt"
-                               th:value="${ticket.displayReceivedAt()}">
+                        <input disabled type="text" class="form-control-plaintext" name="receivedAt" id="receivedAt"
+                               th:value="*{mailReceivedAt}">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label for="reportedAtDate" class="col-2 col-form-label">Date Reported:</label>
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="reportedAtDate" id="reportedAtDate" size="30">
+                        <input type="text" class="form-control" th:field="*{reportedAtDate}" id="reportedAtDate" size="30">
                     </div>
-                    <label for="reportedAtTime" class="col-1">Time: </label>
+                    <label for="reportedAtTime" class="col-form-label">Time: </label>
                     <div class="col-auto">
-                        <input type="text" id="reportedAtTime" name="reportedAtTime" class="form-control">
+                        <input type="text" id="reportedAtTime" th:field="*{reportedAtTime}" class="form-control">
                     </div>
                 </div>
             </section>
@@ -64,7 +64,7 @@
             <h3>Incident information</h3>
             <section class="jumbotron-section">
                 <div class="form-group row">
-                    <div class="col-2">
+                    <div class="col-3">
                         <div class="form-check">
                             <input type="checkbox" th:field="*{credentialsEntered}" class="form-check-inline"
                                    id="credentialsEntered">
@@ -73,17 +73,16 @@
                     </div>
                     <label for="credDate" class="col-form-label-sm credForm hidden">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm credForm hidden" name="credDate" id="credDate"
-                               size="30" disabled>
+                        <input type="text" class="form-control-sm credForm hidden" th:field="*{credentialsEnteredAtDate}" id="credDate"
+                               size="30">
                     </div>
                     <label for="credTime" class="col-form-label-sm credForm hidden">Time: </label>
                     <div class="col-auto">
-                        <input type="text" id="credTime" name="credTime" class="form-control-sm credForm hidden"
-                               disabled>
+                        <input type="text" id="credTime" th:field="*{credentialsEnteredAtTime}" class="form-control-sm credForm hidden">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-2">
+                    <div class="col-3">
                         <div class="form-check">
                             <input type="checkbox" th:field="*{attachmentOpened}" class="form-check-inline"
                                    id="attachmentOpened">
@@ -92,16 +91,15 @@
                     </div>
                     <label for="attDate" class="col-form-label-sm attForm">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm attForm" name="attDate" id="attDate" size="30"
-                               disabled>
+                        <input type="text" class="form-control-sm attForm" th:field="*{attachmentOpenedAtDate}" id="attDate" size="30">
                     </div>
                     <label for="attTime" class="col-form-label-sm attForm">Time: </label>
                     <div class="col-auto">
-                        <input type="text" id="attTime" name="attTime" class="form-control-sm attForm" disabled>
+                        <input type="text" id="attTime" th:field="*{attachmentOpenedAtTime}" class="form-control-sm attForm">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-2">
+                    <div class="col-3">
                         <div class="form-check">
                             <input type="checkbox" th:field="*{linkClicked}" class="form-check-inline"
                                    id="linkClicked">
@@ -110,12 +108,11 @@
                     </div>
                     <label for="credDate" class="col-form-label-sm linkForm">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm linkForm" name="linkDate" id="linkDate" size="30"
-                               disabled>
+                        <input type="text" class="form-control-sm linkForm" th:field="*{linkClickedAtDate}" id="linkDate" size="30">
                     </div>
                     <label for="credTime" class="col-form-label-sm linkForm">Time: </label>
                     <div class="col-auto">
-                        <input type="text" name="linkTime" id="linkTime" class="form-control-sm linkForm" disabled>
+                        <input type="text" name="linkTime" th:field="*{linkClickedAtTime}" class="form-control-sm linkForm">
                     </div>
                 </div>
             </section>
@@ -133,9 +130,9 @@
                                th:field="*{links[__${itemStat.index}__].link}"
                                th:value="*{links[__${itemStat.index}__].link}">
                     </div>
-                    <label th:for="*{links[__${itemStat.index}__].detectionCount}" class="col-2 col-form-label">Detection count:</label>
+                    <label th:for="*{links[__${itemStat.index}__].detectionCount}" class="col-1 col-form-label">Detection count:</label>
                     <div class="col-1">
-                        <input readonly class="form-control-plaintext" name="subject"
+                        <input class="form-control" name="subject"
                                th:id="*{links[__${itemStat.index}__].detectionCount}"
                                th:field="*{links[__${itemStat.index}__].detectionCount}"
                                th:value="*{links[__${itemStat.index}__].detectionCount}">
@@ -167,9 +164,9 @@
                                th:value="*{attachments[__${itemStat.index}__].hash}">
                     </div>
                     <label th:for="*{attachments[__${itemStat.index}__].detectionCount}"
-                           class="col-2 col-form-label">Detection count:</label>
+                           class="col-1 col-form-label">Detection count:</label>
                     <div class="col-1">
-                        <input readonly class="form-control-plaintext"
+                        <input class="form-control"
                                th:id="*{attachments[__${itemStat.index}__].detectionCount}"
                                th:field="*{attachments[__${itemStat.index}__].detectionCount}"
                                th:value="*{attachments[__${itemStat.index}__].detectionCount}">
@@ -194,23 +191,23 @@
                 <label for="srcIpInfo">Origin IP Address:</label>
             </div>
             <div class="form-row">
-                <select th:field="*{srcIP}" id="srcIpInfo" class="form-control">
-                    <option th:each="ipInfo : ${ticket.getIPTrace()}" th:value="${ipInfo.getIp()}"
+                <select th:field="*{srcID}" id="srcIpInfo" class="form-control">
+                    <option th:each="ipInfo : *{ipTrace}" th:value="${ipInfo.getId()}"
                             th:text="${ipInfo.getIp()} + ' - ' + ${ipInfo.getLocationInfo()}"></option>
                 </select>
             </div>
             <div class="form-row form-check">
-                <input class="form-check-inline" id="ipSAPConfigured" type="checkbox" th:field="*{ipSAPConfigured}">
+                <input class="form-check-inline" id="ipSAPConfigured" type="checkbox" th:field="*{SAPDefined}">
                 <label class="form-check-inline" for="ipSAPConfigured"> IP defined within SAP Address space (Check using
                     IPAM) </label>
             </div>
             <div class="form-row form-check">
-                <input class="form-check-inline" id="ipSpoofed" type="checkbox" th:field="*{ipSpoofed}">
+                <input class="form-check-inline" id="ipSpoofed" type="checkbox" th:field="*{spoofed}">
                 <label class="form-check-inline" for="ipSpoofed"> Source address is spoofed or unreliable</label>
             </div>
             <div id="arin" class="form-row">
-                <label for="arinLocation" class="col-form-label">ARIN Location</label>
-                <input type="text" th:field="*{arinLocation}" id="arinLocation" class="form-control col-auto">
+                <label for="arinLocation" class="col -form-label">ARIN Location</label>
+                <input type="text" th:field="*{arin}" id="arinLocation" class="form-control col-auto">
             </div>
         </div>
     </div>
@@ -240,9 +237,13 @@
 
         $("#reportedAtDate").datepicker({"dateFormat" : "yy-mm-dd"});
 
-        $("#linkDate").datepicker({"dateFormat" : "yy-mm-dd"});
+        if(!($("#linkClicked").is(":checked"))){
+            $(".linkForm").addClass("invisible");
+            $("input.linkForm").prop("disabled", "disabled");
+        }
 
-        $(".linkForm").addClass("invisible");
+        $("#linkDate").datepicker({"dateFormat" : "yy-mm-dd"})
+
         $('#linkClicked').on('click', function () {
             if ($("#linkClicked").is(":checked")) {
                 $("input.linkForm").prop("disabled", false);
@@ -255,7 +256,10 @@
 
         $("#attDate").datepicker({"dateFormat" : "yy-mm-dd"});
 
-        $(".attForm").addClass("invisible");
+        if(!($("#attachmentOpened").is(":checked"))){
+            $(".attForm").addClass("invisible")
+            $("input.attForm").prop("disabled", "disabled");
+        }
 
         $('#attachmentOpened').on('click', function () {
             console.log("Change!");
@@ -270,7 +274,11 @@
 
         $("#credDate").datepicker({"dateFormat" : "yy-mm-dd"});
 
-        $(".credForm").addClass("invisible");
+        if(!($("#credentialsEntered").is(":checked"))){
+            $(".credForm").addClass("invisible");
+            $("input.credForm").prop("disabled", "disabled");
+        }
+
         $('#credentialsEntered').on('click', function () {
             console.log("Change!");
             if ($("#credentialsEntered").is(":checked")) {

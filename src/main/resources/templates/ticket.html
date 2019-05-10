@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- No stinkin' CSS or JS required -->
+<div>
+<pre>
+DETAILS:
+Subject line from original e-mail: <span th:text="${ticket.subject}"></span>
+Summary of phishing activity: <span th:text="${ticket.summary}"></span>
+Date/Time original mail received: <span th:text="${ticket.displayReceivedAt()}"></span>
+Date/Time reported: <span th:text="${ticket.displayDateTime(ticket.getReportedAt())}"></span>
+Date/Time clicked on link: <span th:if="${ticket.linkClicked}"
+                                 th:text="${ticket.displayDateTime(ticket.getLinkClickedAt())}"></span><span
+    th:unless="${ticket.linkClicked}">N/A (No link clicked)</span>
+Date/Time opened attachment: <span th:if="${ticket.attachmentOpened}"
+                                   th:text="${ticket.displayDateTime(ticket.getAttachmentOpenedAt())}"></span><span
+    th:unless="${ticket.attachmentOpened}">N/A (No attachment opened)</span>
+Date/Time credentials entered: <span th:if="${ticket.credentialsEntered}"
+                                     th:text="${ticket.displayDateTime(ticket.getCredentialsEnteredAt())}"></span><span
+    th:unless="${ticket.credentialsEntered}">N/A (No credentials entered)</span>
+Recipients: <span th:text="${ticket.recipients}"></span>
+</pre>
+</div>
+<div th:unless="${ticket.getLinks().isEmpty()}">
+<pre>
+LINK INFORMATION:
+<div th:each="link : ${ticket.links}">
+    Link #<span th:text="${linkStat.count}"></span>
+    Link Address: <span th:text="${link.link}"></span>
+    VirusTotal detection ratio: <span th:text="${link.detectionCount}"></span>
+    Link check result: <span th:if="${link.detectionCount == 0}">Clean</span><span
+        th:unless="${link.detectionCount == 0}">Malicious</span>
+    User has clicked the link: <span th:if="${link.clicked}">Yes</span><span th:unless="${link.clicked}">No</span>
+
+</div>
+</pre>
+</div>
+
+<div th:unless="${ticket.getAttachments().isEmpty()}">
+<pre>
+ATTACHMENT INFORMATION:
+<div th:each="attachment : ${ticket.attachments}">
+    Attachment #<span th:text="${attachmentStat.count}"></span>
+    Attachment hash: <span th:text="${attachment.hash}"></span>
+    VirusTotal detection ratio: <span th:text="${attachment.detectionCount}"></span>
+    Attachment check result: <span th:if="${attachment.detectionCount == 0}">Clean</span><span
+        th:unless="${attachment.detectionCount == 0}">Malicious</span>
+    User has opened the attachment: <span th:if="${attachment.opened}">Yes</span><span
+        th:unless="${attachment.opened}">No</span>
+
+</div>
+</pre>
+</div>
+</div>
+
+<div>
+<pre>
+RESULTS OF HEADER ANALYSIS
+Header (File attachment): Attached
+    Sender address spoofed: <span th:if="${ticket.ipSpoofed}">Yes</span><span
+        th:unless="${ticket.ipSpoofed}">No</span>
+    Origin IP address information: <span th:text="${ticket.srcIP.locationInfo}"></span>
+        Origin IP address: <span th:text="${ticket.srcIP.ip}"></span>
+        IP Location (via ip-api.com): <span th:text="${ticket.srcIP.locationInfo}"></span>
+        ISP (via ip-api.com): <span th:text="${ticket.srcIP.isp}"></span>
+        IPAM Lookup result: <span th:if="${ticket.ipSAPConfigured}">Allocated</span><span
+        th:unless="${ticket.ipSAPConfigured}">Not found</span>
+        ARIN IP Origin country: <span th:text="${ticket.arinLocation}"></span>
+</pre>
+</div>
+
+<div>
+<pre>
+MITIGATION:
+Password reset requested: <span th:if="${ticket.pwdResetRequested}">Yes</span><span
+        th:unless="${ticket.pwdResetRequested}">No</span>
+Block sender address:
+    SAP Spam Reporting: <span th:if="${ticket.sapSpamRequested}">Yes</span><span th:unless="${ticket.sapSpamRequested}">No</span>
+    Cisco IronPort: <span th:if="${ticket.ironportRequested}">Yes</span><span
+        th:unless="${ticket.ironportRequested}">No</span>
+</pre>
+</div>
+
+</body>

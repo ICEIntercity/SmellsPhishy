@@ -42,8 +42,8 @@ public class LinkInfo {
     public String toString(){
         return "LinkInfo{\n"
                 + "\t\tlink: " + link + "\n"
-                + "\t\tclicked" + clicked + "\n"
-                + "\t\tdetectionCount" + detectionCount + "\n"
+                + "\t\tclicked: " + clicked + "\n"
+                + "\t\tdetectionCount:" + detectionCount + "\n"
             +"\t\t}";
     }
 }
