@@ -172,7 +172,10 @@
                         <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0 && link.getScanResults().getPermalink() != null}"
                               class="alert alert-primary">
                         <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
-                    </span>
+                        </span>
+                        <span th:if="${link.getScanResults().getPermalink() == ''}"
+                              class="alert alert-warning">VirusTotal scan failed
+                        </span>
                         <span th:if="${link.getScanResults() == null}">
                         Scan failed
                     </span>
