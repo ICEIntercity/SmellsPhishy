@@ -16,7 +16,6 @@
     <div class="jumbotron" id="ticketForm">
         <h2>Ticket content</h2>
         <div class="jumbotron-inner">
-
             <h3>Details</h3>
             <section class="jumbotron-section">
                 <div class="form-group row">
@@ -37,8 +36,11 @@
                 <div class="form-group">
                     <div class="row">
                         <label for="summary" class="col-auto col-form-label">Summary of phishing activity:</label>
-                        <textarea rows="3" class="form-control col-auto" th:field="*{summary}" id="summary" style="width: 98%"></textarea>
+                        <textarea rows="3" class="form-control col-auto" th:field="*{summary}" id="summary"
+                                  style="width: 98%"></textarea>
                     </div>
+                    <div th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"
+                         th:text="${#fields.errors('summary')}" class="alert alert-danger"></div>
                 </div>
                 <div class="form-group row">
                     <label for="receivedAt" class="col-2 col-form-label">Date/Time original mail received:</label>
@@ -51,12 +53,16 @@
                 <div class="form-group row">
                     <label for="reportedAtDate" class="col-2 col-form-label">Date Reported:</label>
                     <div class="col-auto">
-                        <input type="text" class="form-control" th:field="*{reportedAtDate}" id="reportedAtDate" size="30">
+                        <input type="text" class="form-control" th:field="*{reportedAtDate}" id="reportedAtDate"
+                               size="30">
                     </div>
                     <label for="reportedAtTime" class="col-form-label">Time: </label>
                     <div class="col-auto">
                         <input type="text" id="reportedAtTime" th:field="*{reportedAtTime}" class="form-control">
                     </div>
+                </div>
+                <div th:if="${#fields.hasErrors('reportedAtDate') || #fields.hasErrors('reportedAtTime')}"
+                     th:errors="*{reportedAtDate}" class="alert alert-danger">[Field is required]
                 </div>
             </section>
             <hr>
@@ -73,14 +79,20 @@
                     </div>
                     <label for="credDate" class="col-form-label-sm credForm hidden">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm credForm hidden" th:field="*{credentialsEnteredAtDate}" id="credDate"
+                        <input type="text" class="form-control-sm credForm hidden"
+                               th:field="*{credentialsEnteredAtDate}" id="credDate"
                                size="30">
                     </div>
                     <label for="credTime" class="col-form-label-sm credForm hidden">Time: </label>
                     <div class="col-auto">
-                        <input type="text" id="credTime" th:field="*{credentialsEnteredAtTime}" class="form-control-sm credForm hidden">
+                        <input type="text" id="credTime" th:field="*{credentialsEnteredAtTime}"
+                               class="form-control-sm credForm hidden">
                     </div>
                 </div>
+                <div th:if="${#fields.hasErrors('credentialsEnteredAtDate')}" th:errors="*{credentialsEnteredAtDate}"
+                     th:text="${#fields.errors('credentialsEnteredAtDate')}" class="alert alert-danger"></div>
+                <div th:if="${#fields.hasErrors('credentialsEnteredAtTime')}" th:errors="*{credentialsEnteredAtTime}"
+                     th:text="${#fields.errors('credentialsEnteredAtTime')}" class="alert alert-danger"></div>
                 <div class="form-group row">
                     <div class="col-3">
                         <div class="form-check">
@@ -91,13 +103,20 @@
                     </div>
                     <label for="attDate" class="col-form-label-sm attForm">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm attForm" th:field="*{attachmentOpenedAtDate}" id="attDate" size="30">
+                        <input type="text" class="form-control-sm attForm" th:field="*{attachmentOpenedAtDate}"
+                               id="attDate" size="30">
                     </div>
                     <label for="attTime" class="col-form-label-sm attForm">Time: </label>
                     <div class="col-auto">
-                        <input type="text" id="attTime" th:field="*{attachmentOpenedAtTime}" class="form-control-sm attForm">
+                        <input type="text" id="attTime" th:field="*{attachmentOpenedAtTime}"
+                               class="form-control-sm attForm">
                     </div>
                 </div>
+                <div th:if="${#fields.hasErrors('attachmentOpenedAtDate')}" th:errors="*{attachmentOpenedAtDate}"
+                     th:text="${#fields.errors('attachmentOpenedAtDate')}" class="alert alert-danger"></div>
+                <div th:if="${#fields.hasErrors('attachmentOpenedAtTime')}" th:errors="*{attachmentOpenedAtTime}"
+                     th:text="${#fields.errors('attachmentOpenedAtTime')}" class="alert alert-danger"></div>
+
                 <div class="form-group row">
                     <div class="col-3">
                         <div class="form-check">
@@ -108,12 +127,18 @@
                     </div>
                     <label for="credDate" class="col-form-label-sm linkForm">Date: </label>
                     <div class="col-auto">
-                        <input type="text" class="form-control-sm linkForm" th:field="*{linkClickedAtDate}" id="linkDate" size="30">
+                        <input type="text" class="form-control-sm linkForm" th:field="*{linkClickedAtDate}"
+                               id="linkDate" size="30">
                     </div>
                     <label for="credTime" class="col-form-label-sm linkForm">Time: </label>
                     <div class="col-auto">
-                        <input type="text" name="linkTime" th:field="*{linkClickedAtTime}" class="form-control-sm linkForm">
+                        <input type="text" name="linkTime" th:field="*{linkClickedAtTime}"
+                               class="form-control-sm linkForm">
                     </div>
+                    <div th:if="${#fields.hasErrors('linkClickedAtDate')}" th:errors="*{linkClickedAtDate}"
+                         th:text="${#fields.errors('linkClickedAtDate')}" class="alert alert-danger"></div>
+                    <div th:if="${#fields.hasErrors('linkClickedAtTime')}" th:errors="*{linkClickedAtTime}"
+                         th:text="${#fields.errors('linkClickedAtTime')}" class="alert alert-danger"></div>
                 </div>
             </section>
             <span th:if="*{!links.isEmpty()}">
@@ -235,14 +260,14 @@
 
     $(document).ready(function () {
 
-        $("#reportedAtDate").datepicker({"dateFormat" : "yy-mm-dd"});
+        $("#reportedAtDate").datepicker({"dateFormat": "yy-mm-dd"});
 
-        if(!($("#linkClicked").is(":checked"))){
+        if (!($("#linkClicked").is(":checked"))) {
             $(".linkForm").addClass("invisible");
             $("input.linkForm").prop("disabled", "disabled");
         }
 
-        $("#linkDate").datepicker({"dateFormat" : "yy-mm-dd"})
+        $("#linkDate").datepicker({"dateFormat": "yy-mm-dd"})
 
         $('#linkClicked').on('click', function () {
             if ($("#linkClicked").is(":checked")) {
@@ -254,9 +279,9 @@
             }
         });
 
-        $("#attDate").datepicker({"dateFormat" : "yy-mm-dd"});
+        $("#attDate").datepicker({"dateFormat": "yy-mm-dd"});
 
-        if(!($("#attachmentOpened").is(":checked"))){
+        if (!($("#attachmentOpened").is(":checked"))) {
             $(".attForm").addClass("invisible")
             $("input.attForm").prop("disabled", "disabled");
         }
@@ -272,9 +297,9 @@
             }
         });
 
-        $("#credDate").datepicker({"dateFormat" : "yy-mm-dd"});
+        $("#credDate").datepicker({"dateFormat": "yy-mm-dd"});
 
-        if(!($("#credentialsEntered").is(":checked"))){
+        if (!($("#credentialsEntered").is(":checked"))) {
             $(".credForm").addClass("invisible");
             $("input.credForm").prop("disabled", "disabled");
         }
@@ -290,7 +315,7 @@
             }
         });
 
-        if(!($("#senderBlockRequested, #pwdResetRequested").is(":checked"))){
+        if (!($("#senderBlockRequested, #pwdResetRequested").is(":checked"))) {
             $("#mitigationAlert").addClass("invisible");
         }
 

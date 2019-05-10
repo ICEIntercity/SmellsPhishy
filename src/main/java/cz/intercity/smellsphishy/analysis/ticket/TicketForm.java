@@ -56,40 +56,40 @@ public class TicketForm {
     private String subject;
     private String recipients;
 
-    @NotNull
+    @NotNull(message = "Field is required")
     private String summary;
     private String mailReceivedAt;
 
-    @NotNull
-    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|")
+    @NotNull(message = "Field is required")
+    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|", message = "Reported At: Invalid date format")
     private String reportedAtDate;
 
-    @NotNull
-    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|")
+    @NotNull(message = "Field is required")
+    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|", message = "Reported At: Invalid time format")
     private String reportedAtTime;
 
     private boolean linkClicked;
 
-    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|")
+    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|", message = "Link Clicked: Invalid date format")
     private String linkClickedAtDate;
 
-    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|")
+    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|", message = "Link clicked: Invalid time format")
     private String linkClickedAtTime;
 
     private boolean attachmentOpened;
 
-    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|")
+    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|", message = "Attachment opened: Invalid date format")
     private String attachmentOpenedAtDate;
 
-    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|")
+    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|", message = "Attachment opened: Invalid time format")
     private String attachmentOpenedAtTime;
 
     private boolean credentialsEntered;
 
-    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|")
+    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$|", message = "Credentials entered: Invalid date format")
     private String credentialsEnteredAtDate;
 
-    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|")
+    @Pattern(regexp = "^(0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]$|", message = "Credentials entered: Invalid time format")
     private String credentialsEnteredAtTime;
 
     private List<LinkInfo> links;
