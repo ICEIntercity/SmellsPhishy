@@ -7,9 +7,16 @@
 }
 
 .results{
-    text-align: right;
+    text-align: center;
+    border: 1em solid rgba(0,0,0,0);
+    padding: 2%;
+    width: 100% !important;
+    display: inline-block;
 }
 
+.alert-success{
+    text-align: center;
+}
 
 textarea{
     width: 100%;

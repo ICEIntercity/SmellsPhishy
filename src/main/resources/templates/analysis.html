@@ -157,28 +157,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="link : ${message.getLinks()}" style="border-top:1px solid grey">
+                <tr th:each="link : ${message.getLinks()}"
+                    style="border-top:1px solid grey; padding-top: 2%; padding-bottom: 2%;">
                     <th scope="row">
                         <div th:text="${linkStat.count}"></div>
                     </th>
-                    <td th:text="${link.getDomain()}"></td>
-                    <td th:text="${link.getTarget()}"></td>
-                    <td class="results">
-                    <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() != 0}"
-                          th:class="${link.getScanResults().getPositives() == 0} ? 'alert alert-success' : 'alert alert-danger'">
-                        <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
-                           th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
-                    </span>
-                        <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0 && link.getScanResults().getPermalink() != null}"
-                              class="alert alert-primary">
-                        <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
-                        </span>
-                        <span th:if="${link.getScanResults().getPermalink() == ''}"
-                              class="alert alert-warning">VirusTotal scan failed
-                        </span>
-                        <span th:if="${link.getScanResults() == null}">
-                        Scan failed
-                    </span>
+                    <td style="width: 15%" th:text="${link.getDomain()}"></td>
+                    <td style="width: 75%" th:text="${link.getTarget()}"></td>
+                    <td style="width: 10%">
+                        <div class="results" th:class="(${link.getScanResults().getPositives() == 0} ? (${link.getScanResults().getPermalink() == ''} ? 'alert alert-warning' : 'alert alert-success')  : 'alert alert-danger')">
+                            <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() != 0}">
+                                <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
+                                   th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
+                            </span>
+                            <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0 && link.getScanResults().getPermalink() != ''}">
+                                <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
+                            </span>
+                            <span th:if="${link.getScanResults().getPermalink() == ''}">
+                                Scan failed
+                            </span>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -203,7 +201,7 @@
                     <th scope="col">#</th>
                     <th scope="col">File Name</th>
                     <th scope="col">Hash</th>
-                    <th scope="col" class="results">VirusTotal link</th>
+                    <th scope="col" class="results" style="text-align: right;">VirusTotal link</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -211,7 +209,7 @@
                     <td th:text="${hashStat.count}"></td>
                     <td th:text="${hash.getFileName()}"></td>
                     <td><textarea readonly rows="1" th:text="${hash.toString()}"></textarea></td>
-                    <td class="results"><a target="_blank"
+                    <td class="results" style="text-align: right;"><a target="_blank"
                                            th:href="${'https://www.virustotal.com/#/search/' + hash.toString()}">&#x1f517;</a>
                     </td>
                 </tr>
