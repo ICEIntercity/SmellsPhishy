@@ -21,7 +21,7 @@
                 <div class="form-group row">
                     <label for="subject" class="col-2 col-form-label">Subject:</label>
                     <div class="col-auto">
-                        <input disabled type="text" size="30" class="form-control-plaintext" name="subject" id="subject"
+                        <input disabled type="text" size="80" class="form-control-plaintext" name="subject" id="subject"
                                th:field="*{subject}">
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <label for="summary" class="col-auto col-form-label">Summary of phishing activity:</label>
+                        <label for="summary" class="col-auto col-form-label">(*) Summary of phishing activity:</label>
                         <textarea rows="3" class="form-control col-auto" th:field="*{summary}" id="summary"
                                   style="width: 98%"></textarea>
                     </div>
@@ -51,12 +51,12 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="reportedAtDate" class="col-2 col-form-label">Date Reported:</label>
+                    <label for="reportedAtDate" class="col-2 col-form-label">(*) Date Reported:</label>
                     <div class="col-auto">
                         <input type="text" class="form-control" th:field="*{reportedAtDate}" id="reportedAtDate"
                                size="30">
                     </div>
-                    <label for="reportedAtTime" class="col-form-label">Time: </label>
+                    <label for="reportedAtTime" class="col-form-label">(*) Time: </label>
                     <div class="col-auto">
                         <input type="text" id="reportedAtTime" th:field="*{reportedAtTime}" class="form-control">
                     </div>
