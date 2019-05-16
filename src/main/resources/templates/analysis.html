@@ -163,7 +163,7 @@
                         <div th:text="${linkStat.count}"></div>
                     </th>
                     <td style="width: 15%" th:text="${link.getDomain()}"></td>
-                    <td style="width: 65%" th:text="${link.getTarget()}"></td>
+                    <td style="width: 65%"><span th:text="${link.getTarget()}" style="overflow: scroll;"></span></td>
                     <td style="width: 10%">
                         <div class="results" th:class="(${link.getScanResults().getPositives() == 0} ? (${link.getScanResults().getPermalink() == ''} ? 'alert alert-warning' : 'alert alert-success')  : 'alert alert-danger')">
                             <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() != 0}">
