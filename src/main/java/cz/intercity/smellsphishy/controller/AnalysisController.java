@@ -101,21 +101,12 @@ public class AnalysisController {
                             VirusTotalResult.class);
 
 
-                    l.setScanResults(result);
-
-                    if (result == null) {
-                        VirusTotalResult placeholder = new VirusTotalResult();
-                        placeholder.setPermalink("");
-                        placeholder.setPositives(0);
-                        placeholder.setTotal(0);
-
-                        l.setScanResults(placeholder);
-
-                        log.warn("VirusTotal scan failed, using placeholder values");
+                    if (result == null)      { log.warn("VirusTotal scan failed, using placeholder values");
                         throw new RemoteAPIException("Failed to load VirusTotal data");
                     }
                     else{
                         log.info("Successful VirusTotal scan for URL " + l.getTarget());
+                        l.setScanResults(result);
                     }
 
                 } catch (Exception e) {

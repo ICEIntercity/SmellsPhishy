@@ -7,7 +7,10 @@ public class LinkInfo {
 
     public LinkInfo(Link link){
         this.link = link.getTarget().replace(".", "[DOT]");
-        this.detectionCount = link.getScanResults().getPositives();
+
+        if(link.getScanResults() != null) {
+            this.detectionCount = link.getScanResults().getPositives();
+        }
     }
 
     private String link;

@@ -19,7 +19,7 @@ public class Link {
         if(linkMatcher.find()){
             this.domain = linkMatcher.group(1);
         }
-
+        this.scanResults = new VirusTotalResult();
     }
 
     public String getTarget() {

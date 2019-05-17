@@ -24,6 +24,7 @@ public class Ticket {
 
         this.links = new ArrayList<>();
         for(Link l : message.getLinks()){
+
             this.links.add(new LinkInfo(l));
         }
 
