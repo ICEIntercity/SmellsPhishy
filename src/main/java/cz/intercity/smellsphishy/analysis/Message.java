@@ -48,7 +48,7 @@ public class Message {
      *           information.
      * @throws IOException
      */
-    public Message(InputStream in) throws IOException {
+    public Message(InputStream in) throws Exception {
 
         Logger log = LoggerFactory.getLogger(Message.class);
 
@@ -96,7 +96,7 @@ public class Message {
 
 
         //Load HTML or RTF body
-        String body = null;
+        String body = "";
         try {
 
 
@@ -104,13 +104,18 @@ public class Message {
             try {
                 body = mapiMessage.getHtmlBody();
             } catch (ChunkNotFoundException htmlNotFound) {
-                log.trace("No valid HTML content found, attempting to load RTF body...");
-                body = mapiMessage.getRtfBody();
+                log.info("No valid HTML content found, attempting to load RTF body...");
+                try {
+                    body = mapiMessage.getRtfBody();
+                    log.info("Successfully loaded RTF Body");
+                }
+                catch(ChunkNotFoundException e){
+                    throw(e);
+                }
             }
 
         } catch (ChunkNotFoundException cnfe) {
             //This is getting old
-            this.textBody = "";
             log.error("Exception while loading link information: No valid HTML content found within e-mail: " + cnfe.getMessage());
         } finally {
             this.textBody = body;
@@ -146,7 +151,7 @@ public class Message {
         } catch (Exception e) {
             //Finally
             this.headerPlaintext = "";
-            e.printStackTrace();
+            throw(e);
         }
 
         //Get links from e-mail body (Please work on .rtf...)

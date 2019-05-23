@@ -8,6 +8,7 @@ import cz.intercity.smellsphishy.analysis.remote.IPLocation;
 import cz.intercity.smellsphishy.analysis.remote.VirusTotalResult;
 import cz.intercity.smellsphishy.analysis.ticket.TicketForm;
 import cz.intercity.smellsphishy.common.exception.RemoteAPIException;
+import jdk.jfr.StackTrace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -55,7 +56,21 @@ public class AnalysisController {
 
             InputStream is = file.getInputStream();
 
-            Message msg = new Message(is);
+            Message msg = null;
+            try {
+                msg = new Message(is);
+            }
+            catch(Exception e){
+                StringBuilder sb = new StringBuilder();
+                StackTraceElement [] trace = e.getStackTrace();
+                for(StackTraceElement element : trace){
+                    sb.append("\tat ").append(element.toString()).append(" \n");
+                }
+
+                log.error("Exception while creating message object: " + sb.toString());
+                throw(e);
+            }
+
             model.addAttribute("message", msg);
 
             //Run link analysis & get IP location data
@@ -123,8 +138,6 @@ public class AnalysisController {
 
         } catch (Exception e) {
             log.error("Exception while performing e-mail analysis: " + e.getMessage());
-            e.printStackTrace();
-            throw(e);
         }
 
 
