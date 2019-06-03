@@ -117,7 +117,7 @@ public class AnalysisController {
 
 
                     if (result == null)      { log.warn("VirusTotal scan failed, using placeholder values");
-                        throw new RemoteAPIException("Failed to load VirusTotal data");
+                        throw new RemoteAPIException("Failed to load VirusTotal data for " + l.getTarget());
                     }
                     else{
                         log.info("Successful VirusTotal scan for URL " + l.getTarget());
