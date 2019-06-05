@@ -6,7 +6,7 @@
 
     <groupId>cz.intercity.security</groupId>
     <artifactId>phishy</artifactId>
-    <version>1.1.5-RELEASE</version>
+    <version>1.2.0-EXPERIMENTAL</version>
 
     <packaging>${packaging.type}</packaging>
 
@@ -39,6 +39,8 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.0.5.RELEASE</version>
     </parent>
+
+
 
     <dependencies>
         <!-- Spring Framework & Spring Boot -->
@@ -137,6 +139,26 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-persistence</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target name="build-dirs">
+                                <delete dir="target/persistence"/>
+                                <mkdir dir="target/persistence"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

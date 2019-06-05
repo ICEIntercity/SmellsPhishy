@@ -118,14 +118,15 @@ public class Matrix {
         Matrix result = new Matrix(this.height, this.width);
         for(int i = 0; i<this.height; i++){
             for(int j = 0; j<this.width; j++){
-                result.array[i][j] = f.getNumResult(result.array[i][j]);
+                result.array[i][j] = f.getNumResult(this.array[i][j]);
             }
         }
 
         return result;
     }
 
-    public String print(){
+    @Override
+    public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("Matrix (Width: ").append(this.width).append("; Height: ").append(this.height).append(")\n");
         sb.append("{\n");

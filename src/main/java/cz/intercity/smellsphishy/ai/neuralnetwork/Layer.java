@@ -10,7 +10,8 @@ public class Layer {
         this.bias = new Matrix(1, outputs);
 
         //Introduce some entropy
-        weights.applyFunction(new MatrixRandom());
+        this.weights = this.weights.applyFunction(new MatrixRandom());
+        this.bias = this.bias.applyFunction(new MatrixRandom());
     }
 
     public Matrix weights;

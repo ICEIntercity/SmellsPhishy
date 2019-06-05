@@ -1,8 +1,6 @@
-package cz.intercity.smellsphishy.ai;
+package cz.intercity.smellsphishy.ai.ui;
 
-import cz.intercity.smellsphishy.ai.utils.Matrix;
-
-public class Input {
+public class Input implements java.io.Serializable {
     public Input(int grammar, int orgReputation, int urgency, int threat, int personalisation, int tech) {
         this.grammar = grammar;
         this.orgReputation = orgReputation;
@@ -10,6 +8,15 @@ public class Input {
         this.threat = threat;
         this.personalisation = personalisation;
         this.tech = tech;
+    }
+
+    public Input(AIForm form){
+        this.grammar = form.getGrammar();
+        this.orgReputation = form.getOrgReputation();
+        this.urgency = form.getUrgency();
+        this.personalisation = form.getPersonalisation();
+        this.threat = form.getThreat();
+        this.tech = form.getTech();
     }
 
     public double[] getAsArray() {

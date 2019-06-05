@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "cz.intercity.ai.trainingDataFile",
+      "type": "java.lang.String",
+      "description": "Training data file name"
+    },
+    {
+      "name": "cz.intercity.smellsPhishy.persistenceDir",
+      "type": "java.lang.String",
+      "description": "Description for cz.intercity.smellsPhishy.persistenceDir."
+    }
+  ] }

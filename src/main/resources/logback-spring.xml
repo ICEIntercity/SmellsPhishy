@@ -39,7 +39,7 @@
     </root>
 
     <!-- LOG "cz.intercity.*" at INFO level (prod)-->
-    <logger name="cz.intercity" level="info" additivity="false">
+    <logger name="cz.intercity" level="all" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>

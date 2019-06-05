@@ -5,13 +5,17 @@ import cz.intercity.smellsphishy.ai.training.TrainingData;
 import cz.intercity.smellsphishy.ai.utils.Matrix;
 import cz.intercity.smellsphishy.ai.utils.MatrixSigmoid;
 import cz.intercity.smellsphishy.ai.utils.MatrixSigmoidDerivative;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //Probably complete bullshit
 //TODO: Prepare training data (somehow)
 public class NeuralNetwork implements java.io.Serializable {
 
-
     public NeuralNetwork(int inputNeurons, int hiddenNeurons, int outputNeurons, double learningRate){
+        Logger log = LoggerFactory.getLogger(NeuralNetwork.class);
+        log.debug("Neural network initialization routine invoked.");
+
         this.sampleCount = 0;
         this.learningRate = learningRate;
 
@@ -19,6 +23,8 @@ public class NeuralNetwork implements java.io.Serializable {
         this.hiddenLayer = new Layer(inputNeurons, hiddenNeurons);
         this.outputLayer = new Layer(hiddenNeurons, outputNeurons);
 
+        log.debug("Neural network intialized successfully.");
+        log.debug("NN Details: \nHL: \n" + this.hiddenLayer.weights.toString() + "\nOL:\n" +this.outputLayer.weights.toString());
         //No need to init x, h and y (hopefully)
     }
 
@@ -69,12 +75,11 @@ public class NeuralNetwork implements java.io.Serializable {
         for(TrainingCase trainingCase : data.getTrainingCases()){
 
             //load training data
-            Matrix input = new Matrix(trainingCase.input.getAsArray());
-            Matrix desiredOutput = new Matrix(trainingCase.desiredResult);
+            Matrix input = new Matrix(trainingCase.getInput().getAsArray());
+            Matrix desiredOutput = new Matrix(trainingCase.getDesiredResult());
 
             Matrix output = this.computeOutput(input);
             this.learn(desiredOutput);
         }
     }
-
 }

@@ -1,0 +1,39 @@
+label{
+    font-weight: bold;
+    font-size: larger;
+}
+
+.ui-slider-handle{
+    width: 3em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    text-align: center;
+    line-height: 1.6em;
+}
+
+.btn-malicious{
+    border: 2px solid crimson;
+    background: none;
+    color: #0b1d31;
+}
+
+.btn-benign{
+    border: 2px solid darkgreen;
+    background: none;
+    color: #0b1d31;
+}
+
+.btn-malicious:hover{
+    color:white;
+    background: crimson;
+}
+
+.btn-benign:hover{
+    color:white;
+    background: darkgreen;
+}
+
+.btn{
+    margin: 15px;
+}

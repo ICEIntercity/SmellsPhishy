@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="header :: header('Smells Phishy - AI', 'css/ai.css')">
+    <title>AI</title>
+</head>
+<body style="padding: 2%">
+<H1>AI Classification</H1>
+<div class="jumbotron">
+    <h2>E-mail information</h2>
+    <div class="jumbotron-inner">
+        <form action="/aitest" th:object="${form}" method="post">
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="grammar" class="form-l">Grammar rating:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="grammar" type="range" min="0" max="10" step="1"
+                               th:field="*{grammar}"
+                               id="grammar" oninput="grammarOut.value = grammar.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="grammarOut" for="grammar">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Grammar rating indicates how "well" the e-mail is written. Strange word placement, syntax errors
+                        and typos should reduce this rating. A well-written, grammatically correct e-mail should score a
+                        perfect 10.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="orgReputation" class="form-l">Organization reputation:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="orgReputation" type="range" min="0" max="10"
+                               step="1"
+                               th:field="*{orgReputation}"
+                               id="orgReputation" oninput="orgReputationOut.value = orgReputation.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="orgReputationOut" for="orgReputation">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Organization reputation measures how well known and respected the sender's organization is.
+                        Reputable organizations such as SAP or Microsoft should score high, whereas disreputable senders
+                        should score low. A neutral value is 5.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="urgency" class="form-l">Urgency:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="urgency" type="range" min="0" max="10" step="1"
+                               th:field="*{urgency}"
+                               id="urgency" oninput="urgencyOut.value = urgency.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="urgencyOut" for="urgency">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Urgency score is a measure of time pressure exerted by the e-mail. High-urgency e-mails
+                        typically require immediate response or provide a time-limited offer. Low urgency e-mails
+                        require little
+                        to no action.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="threat" class="form-l">Threat:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="threat" type="range" min="0" max="10" step="1"
+                               th:field="*{threat}"
+                               id="threat" oninput="threatOut.value = threat.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="threatOut" for="threat">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Threat (Coerciveness) score measures the perceived impact of ignoring the e-mail. High threat
+                        score examples threaten legal action or severe financial loss.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="personalisation" class="form-l">Personalisation:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="personalisation" type="range" min="0" max="10"
+                               step="1"
+                               th:field="*{personalisation}"
+                               id="personalisation" oninput="personalisationOut.value = personalisation.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="personalisationOut" for="personalisation">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Personalization score indicates how tailored the e-mail is to its recipient and his situation.
+                    </p>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="form-row">
+                    <label for="grammar" class="form-l">Tech:</label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control ui-slider" name="tech" type="range" min="0" max="10" step="1"
+                               th:field="*{tech}"
+                               id="tech" oninput="techOut.value = tech.valueAsNumber">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <output name="techOut" for="tech">0</output>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <p>
+                        Tech score reflects whether signs of obfuscation or other techniques have been used to make the
+                        e-mail
+                        appear more trustworthy. Default value for legitimate e-mails is 10, while elements such as
+                        shortened links, links disguised as images or the presence of attachments reduce this
+                        score.
+                    </p>
+                </div>
+                <div class="form-row">
+                    <label>AI Opinion</label>
+                </div>
+                <div class="form-row">
+                    <p>
+                        AI Unavailable (Training case gathering in process)
+                    </p>
+                </div>
+                <div class="form-row">
+                    <input type="submit" name="decision" value="Malicious!" class="btn btn-malicious">
+                    <input type="submit" name="decision" value="Not malicious!" class="btn btn-benign">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
