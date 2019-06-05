@@ -149,9 +149,13 @@
                         <id>generate-persistence</id>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <target name="build-dirs">
+                            <target name="finalize-win">
                                 <delete dir="target/persistence"/>
                                 <mkdir dir="target/persistence"/>
+                                <delete file="target/startup.bat"/>
+                                <echo file="target/startup.bat" append="false">
+                                    java -jar ${artifactId}-${version}.jar
+                                </echo>
                             </target>
                         </configuration>
                         <goals>
