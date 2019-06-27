@@ -6,7 +6,7 @@
 
     <groupId>cz.intercity.security</groupId>
     <artifactId>phishy</artifactId>
-    <version>1.2.0-EXPERIMENTAL</version>
+    <version>1.2.1-EXPERIMENTAL</version>
 
     <packaging>${packaging.type}</packaging>
 
