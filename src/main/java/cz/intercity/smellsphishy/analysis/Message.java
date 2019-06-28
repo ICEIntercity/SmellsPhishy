@@ -67,31 +67,34 @@ public class Message {
 
 
         //Loading information
+        this.from = " ";
         try {
             this.from = mapiMessage.getDisplayFrom();
         } catch (ChunkNotFoundException cnfe) {
-            //Not fatal, swallow
-            this.from = "";
+            log.info("<From> field empty. Skipping...");
         }
 
+        this.to = " ";
         try {
             this.to = mapiMessage.getRecipientEmailAddress();
         } catch (ChunkNotFoundException cnfe) {
-            //Ditto
-            this.to = "";
+            log.info("<To> field empty. Skipping...");
         }
 
+        this.cc = " ";
         try {
             this.cc = mapiMessage.getDisplayCC();
         } catch (ChunkNotFoundException cnfe) {
             //Again
-            this.cc = "";
+            log.info("<CC> field empty. Skipping...");
         }
+
+        this.subject = "<No subject>";
         try {
             this.subject = mapiMessage.getSubject();
         } catch (ChunkNotFoundException cnfe) {
             //Encore une fois
-            this.subject = "";
+            log.info("<Subject> field empty. Skipping...");
         }
 
 
