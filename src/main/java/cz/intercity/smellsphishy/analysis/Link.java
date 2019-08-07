@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 public class Link {
     private String target;
     private String domain;
-    private VirusTotalResult scanResults;
+
+    private VirusTotalResult vtResult;
 
     public Link(String target){
         this.target = target;
@@ -19,7 +20,8 @@ public class Link {
         if(linkMatcher.find()){
             this.domain = linkMatcher.group(1);
         }
-        this.scanResults = new VirusTotalResult();
+
+        this.vtResult = new VirusTotalResult();
     }
 
     public String getTarget() {
@@ -30,11 +32,12 @@ public class Link {
         return domain;
     }
 
-    public VirusTotalResult getScanResults() {
-        return scanResults;
+    public VirusTotalResult getVtResult() {
+        return vtResult;
     }
 
-    public void setScanResults(VirusTotalResult scanResults) {
-        this.scanResults = scanResults;
+    public void setVtResult(VirusTotalResult vtResult) {
+        this.vtResult = vtResult;
     }
+
 }

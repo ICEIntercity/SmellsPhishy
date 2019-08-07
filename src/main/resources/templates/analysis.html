@@ -4,8 +4,18 @@
 </head>
 <body style="padding:2%">
 <script>
+    async function getSimoneResultAsync(url) {
+
+        let uri_param = encodeURIComponent(url);
+        let response = await fetch(`http://localhost:5000?link=${uri_param}`);
+        if (!response.ok)
+            throw Error(response.statusText);
+        return await response.json();
+    }
+
     $(document).ready(function () {
-        var table = $('#senderchain').DataTable(
+
+        var table = $("#senderchain").DataTable(
             {
                 "paging": false,
                 "searching": false,
@@ -154,6 +164,7 @@
                     <th scope="col">Full link</th>
                     <th scope="col" class="results"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection
                         Ratio</a></th>
+                    <th scope="col">Simone AI Says:</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -163,21 +174,56 @@
                         <div th:text="${linkStat.count}"></div>
                     </th>
                     <td style="width: 15%" th:text="${link.getDomain()}"></td>
-                    <td style="width: 65%"><input readonly type="text" size="65" class="form-control-plaintext" th:value="${link.getTarget()}"></td>
-                    <td style="width: 10%">
-                        <div class="results" th:class="(${link.getScanResults().getPositives() == 0} ? (${link.getScanResults().getPermalink() == ''} ? 'alert alert-warning' : 'alert alert-success')  : 'alert alert-danger')">
-                            <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() != 0}">
-                                <a th:href="${link.getScanResults().getPermalink()}" target="_blank"
-                                   th:text="${link.getScanResults().getPositives()} + '/' + ${link.getScanResults().getTotal()}"></a>
-                            </span>
-                            <span th:if="${link.getScanResults() != null && link.getScanResults().getTotal() == 0 && link.getScanResults().getPermalink() != ''}">
-                                <a th:href="${link.getScanResults().getPermalink()}" target="_blank">View at VirusTotal</a>
-                            </span>
-                            <span th:if="${link.getScanResults().getPermalink() == ''}">
-                                Scan failed
-                            </span>
-                        </div>
+                    <td style="width: 65%"><input readonly type="text" size="65" class="form-control-plaintext"
+                                                  th:value="${link.getTarget()}"></td>
+                    <td style="width: 10%; text-align:center" th:id="${'linkvtinfo' + linkStat.count}">
+
                     </td>
+                    <td style="width: 10%; text-align: center" th:id="${'linksimone' + linkStat.count}">
+                        <button th:id="${'getlinkdetails' + linkStat.count}" class="btn btn-outline-dark">Get Results</button>
+                    </td>
+                    <script>
+                        $("[[${'#getlinkdetails' + linkStat.count}]]").on("click", function () {
+
+                            $("[[${'#linksimone' + linkStat.count }]]").html("Loading...");
+                            getSimoneResultAsync("[[${link.getTarget()}]]")
+                                .then(function (data) {
+                                        if (data.classification != "Clean")
+                                            $("[[${'#linksimone' + linkStat.count }]]").html("<p class='error'>"
+                                                + data.classification + "</p>");
+                                        else
+                                            $("[[${'#linksimone' + linkStat.count }]]").html("<p class='ok'>"
+                                                + data.classification + "</p>");
+
+                                        if (data.vt_positives != 0)
+                                            if(data.vt_positives == undefined)
+                                                $("[[${'#linkvtinfo' + linkStat.count }]]").html("<p class='error'>Unavailable</p>");
+                                            else
+                                                $("[[${'#linkvtinfo' + linkStat.count }]]").html("<p class='error'>"
+                                                + data.vt_positives + "/" + data.vt_total + "</p>");
+                                        else
+                                            $("[[${'#linkvtinfo' + linkStat.count }]]").html("<p class='ok'>"
+                                                + data.vt_positives + "/" + data.vt_total + "</p>");
+
+                                        var ajaxData = {id: [[${linkStat.count}]], permalink: data.vt_link,
+                                            detections: data.vt_positives, total: data.vt_total}
+
+                                        $.ajax({
+                                            url: "/updateLink",
+                                            dataType: 'text',
+                                            type: 'POST',
+                                            data: ajaxData,
+                                        }).fail(function(request, status, error){console.log("Error while updating internal VT data: "
+                                            + request.responseText);});
+
+                                    }
+                                )
+                                .catch(function (error) {
+                                    console.log(error)
+                                    $("[[${'#linksimone' + linkStat.count }]]").html("<p class='error'>Network Error</p>");
+                                });
+                        })
+                    </script>
                 </tr>
                 </tbody>
             </table>
@@ -210,7 +256,7 @@
                     <td th:text="${hash.getFileName()}"></td>
                     <td><textarea readonly rows="1" th:text="${hash.toString()}"></textarea></td>
                     <td class="results" style="text-align: right;"><a target="_blank"
-                                           th:href="${'https://www.virustotal.com/#/search/' + hash.toString()}">&#x1f517;</a>
+                                                                      th:href="${'https://www.virustotal.com/#/search/' + hash.toString()}">&#x1f517;</a>
                     </td>
                 </tr>
                 </tbody>

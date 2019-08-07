@@ -36,50 +36,53 @@
             <hr>
             <div class="form-group">
                 <div class="form-row">
-                    <label for="orgReputation" class="form-l">Organization reputation:</label>
+                    <label class="form-l">Organization reputation:</label>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <input class="form-control ui-slider" name="orgReputation" type="range" min="0" max="10"
-                               step="1"
-                               th:field="*{orgReputation}"
-                               id="orgReputation" oninput="orgReputationOut.value = orgReputation.valueAsNumber">
+
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" id="orgReputable" name="orgReputation" value="5"> Large reputable
+                        company
                     </div>
-                    <div class="form-group col-md-2">
-                        <output name="orgReputationOut" for="orgReputation">0</output>
+                    <div class="form-group col-md-3 radio">
+                        <input type="radio" id="orgSmallBusiness" name="orgReputation" value="4"> Legitimate
+                        small/medium business
                     </div>
-                </div>
-                <div class="form-row">
-                    <p>
-                        Organization reputation measures how well known and respected the sender's organization is.
-                        Reputable organizations such as SAP or Microsoft should score high, whereas disreputable senders
-                        should score low. A neutral value is 5.
-                    </p>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" id="orgIndividual" name="orgReputation" value="3" checked> Individual
+                        person
+                    </div>
+                    <div class="form-group col-md-3 radio">
+                        <input type="radio" id="orgDisreputable" name="orgReputation" value="2">
+                        Disreputable/Unverifiable organization
+                    </div>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" id="orgImposter" name="orgReputation" value="1"> Impersonator
+                    </div>
                 </div>
             </div>
 
             <hr>
             <div class="form-group">
                 <div class="form-row">
-                    <label for="urgency" class="form-l">Urgency:</label>
+                    <label class="form-l">Urgency:</label>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <input class="form-control ui-slider" name="urgency" type="range" min="0" max="10" step="1"
-                               th:field="*{urgency}"
-                               id="urgency" oninput="urgencyOut.value = urgency.valueAsNumber">
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" name="urgency" value="5"> Immediate action required
                     </div>
-                    <div class="form-group col-md-2">
-                        <output name="urgencyOut" for="urgency">0</output>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" name="urgency" value="4"> Action required within 7 days
                     </div>
-                </div>
-                <div class="form-row">
-                    <p>
-                        Urgency score is a measure of time pressure exerted by the e-mail. High-urgency e-mails
-                        typically require immediate response or provide a time-limited offer. Low urgency e-mails
-                        require little
-                        to no action.
-                    </p>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" name="urgency" value="3"> Action required within 1 month
+                    </div>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" name="urgency" value="2"> Action required (>1 month)
+                    </div>
+                    <div class="form-group col-md-2 radio">
+                        <input type="radio" name="urgency" value="1" checked> No action required
+                    </div>
                 </div>
             </div>
 

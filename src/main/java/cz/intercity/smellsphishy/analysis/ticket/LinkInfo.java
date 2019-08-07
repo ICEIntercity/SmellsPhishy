@@ -5,12 +5,15 @@ import cz.intercity.smellsphishy.analysis.remote.VirusTotalResult;
 
 public class LinkInfo {
 
+    public LinkInfo(){
+        this.link = "";
+        this.clicked = false;
+        this.detectionCount = 0;
+    }
+
     public LinkInfo(Link link){
         this.link = link.getTarget().replace(".", "[DOT]");
-
-        if(link.getScanResults() != null) {
-            this.detectionCount = link.getScanResults().getPositives();
-        }
+        this.detectionCount = link.getVtResult().getPositives();
     }
 
     private String link;

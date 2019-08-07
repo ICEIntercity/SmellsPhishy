@@ -21,3 +21,13 @@
 textarea{
     width: 100%;
 }
+
+.error{
+    color: #ff0000;
+    font-size: 12pt;
+}
+
+.ok{
+    color: #269d25;
+    font-size:12pt;
+}

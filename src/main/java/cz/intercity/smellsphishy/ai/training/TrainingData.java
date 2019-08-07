@@ -52,6 +52,7 @@ public class TrainingData implements java.io.Serializable {
             out.close();
             fileOut.close();
             log.info("Training data saved to file: " + persistenceFile);
+            log.info("Current status: " + this.toString());
         }
         catch(IOException e){
             log.error("Exception while serializing training data:" + e.getMessage());
@@ -66,7 +67,7 @@ public class TrainingData implements java.io.Serializable {
         Logger log = LoggerFactory.getLogger(TrainingData.class);
 
         try{
-            log.debug("Starting serialization of training data...");
+            log.debug("Starting deserialization of training data...");
             FileInputStream fileIn = new FileInputStream(persistenceFile);
             ObjectInputStream in = new ObjectInputStream(fileIn);
             td = (TrainingData) in.readObject();
