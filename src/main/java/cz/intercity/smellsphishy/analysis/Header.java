@@ -18,7 +18,7 @@ import java.util.regex.*;
  */
 public class Header {
 
-    Logger log = LoggerFactory.getLogger(Header.class);
+    private Logger log = LoggerFactory.getLogger(Header.class);
 
     private String sender;
     private String recipient;
@@ -40,7 +40,7 @@ public class Header {
      * Default constructor of the cz.intercity.smellsphishy.analysis.Header class
      */
     public Header(){
-        this.received = new ArrayList<ReceivedEntry>();
+        this.received = new ArrayList<>();
     }
 
     /**
@@ -105,8 +105,8 @@ public class Header {
         The flag will be checked at the end of this method, and an exception will be thrown if none of the fields were
         successfully parsed. Furthermore, the exception will also be thrown if the sender chain could not be found.
         */
-        Boolean senderChainIntegrityFlag = true;
-        Boolean fieldsIntegrityFlag = false;
+        boolean senderChainIntegrityFlag = true;
+        boolean fieldsIntegrityFlag = false;
 
         /*
         Header fields are parsed using RegEx. There is probably a better way, but it eludes me at the moment...
@@ -250,7 +250,10 @@ public class Header {
     }
 
     public String getIp(){
-        return messageSource.getSourceIP();
+        if(messageSource != null)
+            return messageSource.getSourceIP();
+        else
+            return "Unknown";
     }
 
     public ReceivedEntry getMessageSource() {
@@ -261,6 +264,7 @@ public class Header {
         this.messageSource = messageSource;
     }
 
+    @Deprecated
     private void setMessageSourceByIP(String sourceIP){
 
         boolean sourceIsSet = false;
@@ -273,7 +277,7 @@ public class Header {
         }
 
         if(!sourceIsSet){
-            log.warn("Requested source IP '" + sourceIP + "'not found. Message source remains unchanged.");
+            log.warn("Requested source IP '" + sourceIP + "' not found. Message source remains unchanged.");
         }
     }
 }

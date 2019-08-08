@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 //Appropriated from Secoority
 public class ReceivedEntry {
 
-    Logger log = LoggerFactory.getLogger(ReceivedEntry.class);
+    private Logger log = LoggerFactory.getLogger(ReceivedEntry.class);
 
     private String source;
     private String target;
@@ -75,7 +75,11 @@ public class ReceivedEntry {
             if (ipMatcher.find()) {
                 this.sourceIP = ipMatcher.group(0);
             }
+            else
+                this.sourceIP = "Not Set";
         }
+        else
+            this.source = "Unknown (Not set)";
 
         Pattern methodPattern = Pattern.compile(ParserRegex.METHOD.getRegex(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.UNIX_LINES);
         Matcher methodMatcher = methodPattern.matcher(entryPlaintext);
