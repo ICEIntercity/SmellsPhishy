@@ -7,7 +7,7 @@
     async function getSimoneResultAsync(url) {
 
         let uri_param = encodeURIComponent(url);
-        let response = await fetch(`http://localhost:5000?link=${uri_param}`);
+        let response = await fetch(`http://` + self.location.hostname + `:5000?link=${uri_param}`);
         if (!response.ok)
             throw Error(response.statusText);
         return await response.json();
@@ -162,9 +162,9 @@
                     <th scope="col">#</th>
                     <th scope="col">Domain</th>
                     <th scope="col">Full link</th>
-                    <th scope="col" class="results"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection
+                    <th scope="col" class="results" style="text-align: center"><a href="https://www.virustotal.com/#/home/url">VirusTotal Detection
                         Ratio</a></th>
-                    <th scope="col">Simone AI Says:</th>
+                    <th scope="col" style="text-align: center">Simone AI Says:</th>
                 </tr>
                 </thead>
                 <tbody>
