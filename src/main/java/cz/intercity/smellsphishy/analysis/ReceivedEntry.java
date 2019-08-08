@@ -76,7 +76,7 @@ public class ReceivedEntry {
                 this.sourceIP = ipMatcher.group(0);
             }
             else
-                this.sourceIP = "Not Set";
+                this.sourceIP = null;
         }
         else
             this.source = "Unknown (Not set)";

@@ -9,6 +9,11 @@ public class AttachmentInfo {
     private boolean opened;
     private int detectionCount;
 
+    public AttachmentInfo(){
+        this.name = "";
+        this.hash = "";
+    }
+
     public AttachmentInfo(AttachmentHash attachment){
         this.name = attachment.getFileName();
         this.hash = attachment.toString();

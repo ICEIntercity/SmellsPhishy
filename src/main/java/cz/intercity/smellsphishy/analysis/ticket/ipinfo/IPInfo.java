@@ -14,8 +14,16 @@ public class IPInfo {
     protected IPInfo(ReceivedEntry source, int id){
         this.ip = source.getSourceIP();
         IPLocation location = source.getSourceLocation();
-        this.locationInfo = location.getCity() + ", " + location.getRegionName() + ", " + location.getCountry();
-        this.isp = location.getIsp();
+
+        if (location != null) {
+            this.locationInfo = location.getCity() + ", " + location.getRegionName() + ", " + location.getCountry();
+            this.isp = location.getIsp();
+        }
+        else {
+            this.locationInfo = "Info Unavailable";
+            this.isp = "";
+        }
+
         this.id = id;
     }
 
